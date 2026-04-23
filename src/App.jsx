@@ -3,8 +3,11 @@ import {
   Menu, X, ChevronRight, PlayCircle, ShieldCheck,
   CheckCircle2, MapPin, Phone, MessageSquare, ArrowRight,
   Stethoscope, Activity, Heart, Users, Calendar, Clock,
-  Check, Quote, Star
+  Check, Quote, Star, LogIn
 } from 'lucide-react';
+
+const PORTAL_URL = 'https://pnw-clinical-portal.pages.dev';
+const GHL_BOOKING_URL = 'https://api.leadconnectorhq.com/widget/booking/bookwithuschiropractic-42203d89-e098-448f-b80b-dddaad616608';
 
 export default function App() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -230,32 +233,21 @@ export default function App() {
             <p className="text-[10px] font-black uppercase text-slate-400 mb-4 tracking-widest">Select Service Type</p>
             <div className="grid grid-cols-2 gap-3">
               {["Injury Rehab", "Manual Therapy", "Deep Tissue", "Trigger Point"].map(s => (
-                <button key={s} className="px-4 py-3 border border-slate-200 rounded-2xl text-sm font-bold text-slate-700 hover:border-teal-500 hover:bg-teal-50 transition-all flex items-center justify-between group">
-                  {s} <Check size={14} className="text-teal-600 opacity-0 group-hover:opacity-100" />
-                </button>
+                <a key={s} href={GHL_BOOKING_URL} target="_blank" rel="noopener noreferrer" className="px-4 py-3 border border-slate-200 rounded-2xl text-sm font-bold text-slate-700 hover:border-teal-500 hover:bg-teal-50 transition-all flex items-center justify-between group">
+                  {s} <ChevronRight size={14} className="text-teal-600 opacity-0 group-hover:opacity-100" />
+                </a>
               ))}
             </div>
           </div>
-          <div className="flex gap-6">
-            <div className="flex-1">
-              <label className="text-[10px] font-black uppercase text-slate-400 mb-2 block tracking-widest">Preferred Day</label>
-              <div className="flex items-center gap-3 p-4 bg-slate-50 border border-slate-200 rounded-2xl font-bold">
-                <Calendar size={18} className="text-teal-600" />
-                <span className="text-slate-800">Select Date</span>
-              </div>
-            </div>
-            <div className="flex-1">
-              <label className="text-[10px] font-black uppercase text-slate-400 mb-2 block tracking-widest">Preferred Time</label>
-              <div className="flex items-center gap-3 p-4 bg-slate-50 border border-slate-200 rounded-2xl font-bold">
-                <Clock size={18} className="text-teal-600" />
-                <span className="text-slate-800">9:00 AM - 3:00 PM</span>
-              </div>
-            </div>
+          <a href={GHL_BOOKING_URL} target="_blank" rel="noopener noreferrer" className="block w-full py-5 bg-teal-700 text-white rounded-[2rem] font-black text-sm uppercase tracking-widest shadow-xl shadow-teal-700/20 hover:scale-[1.02] transition-all text-center">
+            View Available Times
+          </a>
+          <div className="text-center space-y-2">
+            <p className="text-[10px] font-bold text-slate-400">MVA/PIP patients — start your intake here:</p>
+            <a href={PORTAL_URL} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 text-xs font-black uppercase text-teal-700 hover:text-teal-900">
+              <LogIn size={14} /> Open Patient Portal
+            </a>
           </div>
-          <button className="w-full py-5 bg-teal-700 text-white rounded-[2rem] font-black text-sm uppercase tracking-widest shadow-xl shadow-teal-700/20 hover:scale-[1.02] transition-all">
-            Check Availability
-          </button>
-          <p className="text-center text-[10px] font-bold text-slate-400">Waitlist Available for MVA/PIP Claims</p>
         </div>
       </div>
     </div>
@@ -281,7 +273,9 @@ export default function App() {
             <NavItem label="Services" id="services" />
             <NavItem label="About Glen" id="about" />
             <NavItem label="Insurance" id="insurance" />
-            <NavItem label="Blog" id="blog" />
+            <a href={PORTAL_URL} target="_blank" rel="noopener noreferrer" className="text-sm font-bold tracking-tight text-slate-500 hover:text-teal-600 transition-colors flex items-center gap-1.5">
+              <LogIn size={14} /> Patient Portal
+            </a>
             <button
               onClick={() => setShowBooking(true)}
               className="bg-teal-700 text-white px-6 py-2.5 rounded-full text-xs font-black uppercase tracking-widest hover:bg-teal-800 transition-all shadow-lg shadow-teal-700/20"
@@ -302,7 +296,9 @@ export default function App() {
             <NavItem label="Services" id="services" />
             <NavItem label="About Glen" id="about" />
             <NavItem label="Insurance" id="insurance" />
-            <NavItem label="Blog" id="blog" />
+            <a href={PORTAL_URL} target="_blank" rel="noopener noreferrer" onClick={() => setIsMenuOpen(false)} className="text-sm font-bold tracking-tight text-slate-500 hover:text-teal-600 transition-colors flex items-center gap-2">
+              <LogIn size={16} /> Patient Portal
+            </a>
             <button
               onClick={() => { setShowBooking(true); setIsMenuOpen(false); }}
               className="w-full bg-teal-700 text-white py-4 rounded-2xl font-black uppercase tracking-widest"
@@ -336,9 +332,9 @@ export default function App() {
           <p className="text-emerald-800 font-medium mb-8 leading-relaxed">
             We specialize in Motor Vehicle Accident (MVA) recovery. We bill the insurance companies directly so you can focus on healing, not paperwork.
           </p>
-          <button className="self-start flex items-center gap-3 px-8 py-4 bg-emerald-600 text-white rounded-2xl font-black text-xs uppercase tracking-widest shadow-xl shadow-emerald-600/20 hover:scale-105 transition-all">
+          <a href={PORTAL_URL} target="_blank" rel="noopener noreferrer" className="self-start flex items-center gap-3 px-8 py-4 bg-emerald-600 text-white rounded-2xl font-black text-xs uppercase tracking-widest shadow-xl shadow-emerald-600/20 hover:scale-105 transition-all">
             Start Insurance Inquiry <ArrowRight size={16} />
-          </button>
+          </a>
         </div>
         <div className="bg-teal-50 p-12 rounded-[3rem] border border-teal-100 flex flex-col justify-center">
           <h3 className="text-3xl font-black text-teal-900 mb-6 tracking-tight">Referral Program</h3>
