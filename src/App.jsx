@@ -194,7 +194,7 @@ export default function App() {
         <div className="grid lg:grid-cols-2 gap-20 items-center">
           <div className="relative">
             <div className="aspect-[4/5] bg-slate-100 rounded-[4rem] overflow-hidden shadow-2xl relative">
-               <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1594824476967-48c8b964273f?q=80&w=1974&auto=format&fit=crop')] bg-cover bg-center"></div>
+               <div className="absolute inset-0 bg-[url('/images/glen-arn.jpg')] bg-cover bg-center bg-top"></div>
                <div className="absolute inset-0 bg-teal-900/10"></div>
             </div>
             <div className="absolute -bottom-6 -left-6 bg-white p-8 rounded-3xl shadow-xl border border-slate-50">
