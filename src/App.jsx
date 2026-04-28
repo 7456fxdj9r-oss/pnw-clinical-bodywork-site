@@ -18,6 +18,7 @@ export default function App() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [activeTab, setActiveTab] = useState('home');
   const [showBooking, setShowBooking] = useState(false);
+  const [selectedBookingUrl, setSelectedBookingUrl] = useState(null);
 
   // Theme Colors: Muted Teal, Sage, White
   const colors = {
@@ -221,44 +222,65 @@ export default function App() {
     </section>
   );
 
+  const closeBooking = () => { setShowBooking(false); setSelectedBookingUrl(null); };
+
   const BookingModal = () => (
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-300">
-      <div className="bg-white w-full max-w-xl rounded-[3rem] shadow-2xl overflow-hidden animate-in zoom-in-95 slide-in-from-bottom-4 duration-500">
-        <div className="p-8 bg-teal-700 text-white flex justify-between items-center">
-          <div>
-            <h3 className="text-2xl font-black">Book a Session</h3>
-            <p className="text-teal-100 text-xs font-bold uppercase tracking-widest">Vancouver Clinical Studio</p>
-          </div>
-          <button onClick={() => setShowBooking(false)} className="bg-white/20 hover:bg-white/30 p-2 rounded-full transition-colors">
-            <X size={24} />
-          </button>
-        </div>
-        <div className="p-10 space-y-8">
-          <div>
-            <p className="text-[10px] font-black uppercase text-slate-400 mb-4 tracking-widest">Select Session Length</p>
-            <div className="grid grid-cols-1 gap-3">
-              {[
-                { label: '60-Minute Session', price: '$100', url: BOOKING_URLS['60'] },
-                { label: '90-Minute Session', price: '$150', url: BOOKING_URLS['90'] },
-                { label: '2-Hour Session', price: '$200', url: BOOKING_URLS['120'] },
-              ].map(s => (
-                <a key={s.label} href={s.url} target="_blank" rel="noopener noreferrer" className="px-5 py-4 border border-slate-200 rounded-2xl font-bold text-slate-700 hover:border-teal-500 hover:bg-teal-50 transition-all flex items-center justify-between group">
-                  <div>
-                    <span className="text-sm">{s.label}</span>
-                    <span className="text-xs text-teal-600 ml-2">{s.price}</span>
-                  </div>
-                  <ChevronRight size={14} className="text-teal-600 opacity-0 group-hover:opacity-100" />
-                </a>
-              ))}
+      <div className={`bg-white w-full ${selectedBookingUrl ? 'max-w-2xl h-[90vh]' : 'max-w-xl'} rounded-[2rem] shadow-2xl overflow-hidden animate-in zoom-in-95 slide-in-from-bottom-4 duration-500 flex flex-col`}>
+        <div className="p-6 bg-teal-700 text-white flex justify-between items-center flex-shrink-0">
+          <div className="flex items-center gap-3">
+            {selectedBookingUrl && (
+              <button onClick={() => setSelectedBookingUrl(null)} className="bg-white/20 hover:bg-white/30 p-1.5 rounded-full transition-colors">
+                <ChevronRight size={18} className="rotate-180" />
+              </button>
+            )}
+            <div>
+              <h3 className="text-xl font-black">Book a Session</h3>
+              <p className="text-teal-100 text-xs font-bold uppercase tracking-widest">Vancouver Clinical Studio</p>
             </div>
           </div>
-          <div className="text-center space-y-2">
-            <p className="text-[10px] font-bold text-slate-400">MVA/PIP patients — start your intake here:</p>
-            <a href={PORTAL_URL} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 text-xs font-black uppercase text-teal-700 hover:text-teal-900">
-              <LogIn size={14} /> Practitioner Portal
-            </a>
-          </div>
+          <button onClick={closeBooking} className="bg-white/20 hover:bg-white/30 p-2 rounded-full transition-colors">
+            <X size={22} />
+          </button>
         </div>
+
+        {!selectedBookingUrl ? (
+          <div className="p-8 space-y-6 overflow-y-auto">
+            <div>
+              <p className="text-[10px] font-black uppercase text-slate-400 mb-4 tracking-widest">Select Session Length</p>
+              <div className="grid grid-cols-1 gap-3">
+                {[
+                  { label: '60-Minute Session', price: '$100', url: BOOKING_URLS['60'] },
+                  { label: '90-Minute Session', price: '$150', url: BOOKING_URLS['90'] },
+                  { label: '2-Hour Session', price: '$200', url: BOOKING_URLS['120'] },
+                ].map(s => (
+                  <button key={s.label} onClick={() => setSelectedBookingUrl(s.url)} className="px-5 py-4 border border-slate-200 rounded-2xl font-bold text-slate-700 hover:border-teal-500 hover:bg-teal-50 transition-all flex items-center justify-between group text-left">
+                    <div>
+                      <span className="text-sm">{s.label}</span>
+                      <span className="text-xs text-teal-600 ml-2">{s.price}</span>
+                    </div>
+                    <ChevronRight size={14} className="text-teal-600 opacity-0 group-hover:opacity-100" />
+                  </button>
+                ))}
+              </div>
+            </div>
+            <div className="text-center space-y-2">
+              <p className="text-[10px] font-bold text-slate-400">MVA/PIP patients — start your intake here:</p>
+              <a href={PORTAL_URL} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 text-xs font-black uppercase text-teal-700 hover:text-teal-900">
+                <LogIn size={14} /> Practitioner Portal
+              </a>
+            </div>
+          </div>
+        ) : (
+          <div className="flex-1 overflow-hidden">
+            <iframe
+              src={selectedBookingUrl}
+              title="Book Appointment"
+              className="w-full h-full border-0"
+              allow="payment"
+            />
+          </div>
+        )}
       </div>
     </div>
   );
