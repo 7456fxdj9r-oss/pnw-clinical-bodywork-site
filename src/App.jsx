@@ -7,7 +7,8 @@ import {
 } from 'lucide-react';
 
 const PORTAL_URL = 'https://portal.pnwclinicalbodywork.com';
-const GHL_BOOKING_URL = 'https://api.leadconnectorhq.com/widget/booking/bookwithuschiropractic-42203d89-e098-448f-b80b-dddaad616608';
+// TODO: Replace with GHL calendar widget URLs once Glen opens calendars in GHL dashboard
+const BOOKING_URL = 'https://portal.pnwclinicalbodywork.com';
 
 export default function App() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -233,13 +234,13 @@ export default function App() {
             <p className="text-[10px] font-black uppercase text-slate-400 mb-4 tracking-widest">Select Service Type</p>
             <div className="grid grid-cols-2 gap-3">
               {["Injury Rehab", "Manual Therapy", "Deep Tissue", "Trigger Point"].map(s => (
-                <a key={s} href={GHL_BOOKING_URL} target="_blank" rel="noopener noreferrer" className="px-4 py-3 border border-slate-200 rounded-2xl text-sm font-bold text-slate-700 hover:border-teal-500 hover:bg-teal-50 transition-all flex items-center justify-between group">
+                <a key={s} href={BOOKING_URL} target="_blank" rel="noopener noreferrer" className="px-4 py-3 border border-slate-200 rounded-2xl text-sm font-bold text-slate-700 hover:border-teal-500 hover:bg-teal-50 transition-all flex items-center justify-between group">
                   {s} <ChevronRight size={14} className="text-teal-600 opacity-0 group-hover:opacity-100" />
                 </a>
               ))}
             </div>
           </div>
-          <a href={GHL_BOOKING_URL} target="_blank" rel="noopener noreferrer" className="block w-full py-5 bg-teal-700 text-white rounded-[2rem] font-black text-sm uppercase tracking-widest shadow-xl shadow-teal-700/20 hover:scale-[1.02] transition-all text-center">
+          <a href={BOOKING_URL} target="_blank" rel="noopener noreferrer" className="block w-full py-5 bg-teal-700 text-white rounded-[2rem] font-black text-sm uppercase tracking-widest shadow-xl shadow-teal-700/20 hover:scale-[1.02] transition-all text-center">
             View Available Times
           </a>
           <div className="text-center space-y-2">
