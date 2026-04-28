@@ -7,8 +7,12 @@ import {
 } from 'lucide-react';
 
 const PORTAL_URL = 'https://portal.pnwclinicalbodywork.com';
-// TODO: Replace with GHL calendar widget URLs once Glen opens calendars in GHL dashboard
-const BOOKING_URL = 'https://portal.pnwclinicalbodywork.com';
+const BOOKING_URLS = {
+  '60': 'https://link.marketsimple.pro/widget/booking/2hyurARKX9b2Bj9yJa3y',
+  '90': 'https://link.marketsimple.pro/widget/booking/xMRrbENBVce73Q5Nixhk',
+  '120': 'https://link.marketsimple.pro/widget/booking/U1hKaHNmpio3KrzdN34N',
+};
+const BOOKING_URL = BOOKING_URLS['60'];
 
 export default function App() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -231,18 +235,23 @@ export default function App() {
         </div>
         <div className="p-10 space-y-8">
           <div>
-            <p className="text-[10px] font-black uppercase text-slate-400 mb-4 tracking-widest">Select Service Type</p>
-            <div className="grid grid-cols-2 gap-3">
-              {["Injury Rehab", "Manual Therapy", "Deep Tissue", "Trigger Point"].map(s => (
-                <a key={s} href={BOOKING_URL} target="_blank" rel="noopener noreferrer" className="px-4 py-3 border border-slate-200 rounded-2xl text-sm font-bold text-slate-700 hover:border-teal-500 hover:bg-teal-50 transition-all flex items-center justify-between group">
-                  {s} <ChevronRight size={14} className="text-teal-600 opacity-0 group-hover:opacity-100" />
+            <p className="text-[10px] font-black uppercase text-slate-400 mb-4 tracking-widest">Select Session Length</p>
+            <div className="grid grid-cols-1 gap-3">
+              {[
+                { label: '60-Minute Session', price: '$125', url: BOOKING_URLS['60'] },
+                { label: '90-Minute Session', price: '$175', url: BOOKING_URLS['90'] },
+                { label: '2-Hour Session', price: '$225', url: BOOKING_URLS['120'] },
+              ].map(s => (
+                <a key={s.label} href={s.url} target="_blank" rel="noopener noreferrer" className="px-5 py-4 border border-slate-200 rounded-2xl font-bold text-slate-700 hover:border-teal-500 hover:bg-teal-50 transition-all flex items-center justify-between group">
+                  <div>
+                    <span className="text-sm">{s.label}</span>
+                    <span className="text-xs text-teal-600 ml-2">{s.price}</span>
+                  </div>
+                  <ChevronRight size={14} className="text-teal-600 opacity-0 group-hover:opacity-100" />
                 </a>
               ))}
             </div>
           </div>
-          <a href={BOOKING_URL} target="_blank" rel="noopener noreferrer" className="block w-full py-5 bg-teal-700 text-white rounded-[2rem] font-black text-sm uppercase tracking-widest shadow-xl shadow-teal-700/20 hover:scale-[1.02] transition-all text-center">
-            View Available Times
-          </a>
           <div className="text-center space-y-2">
             <p className="text-[10px] font-bold text-slate-400">MVA/PIP patients — start your intake here:</p>
             <a href={PORTAL_URL} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 text-xs font-black uppercase text-teal-700 hover:text-teal-900">
