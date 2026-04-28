@@ -6,7 +6,7 @@ import {
   Check, Quote, Star, LogIn
 } from 'lucide-react';
 
-const PORTAL_URL = 'https://pnw-clinical-portal.pages.dev';
+const PORTAL_URL = 'https://portal.pnwclinicalbodywork.com';
 const GHL_BOOKING_URL = 'https://api.leadconnectorhq.com/widget/booking/bookwithuschiropractic-42203d89-e098-448f-b80b-dddaad616608';
 
 export default function App() {
