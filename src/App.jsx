@@ -166,10 +166,10 @@ export default function App() {
         </div>
         <div className="grid md:grid-cols-2 gap-8">
           {[
-            { name: "Myofascial Release", time: "60/90 Min", price: "$125+", desc: "Targets the stiff connective tissue to reduce chronic pain and improve flexibility.", icon: Activity },
+            { name: "Myofascial Release", time: "60/90 Min", price: "$100+", desc: "Targets the stiff connective tissue to reduce chronic pain and improve flexibility.", icon: Activity },
             { name: "Injury Rehabilitation", time: "60/90 Min", price: "Insurance/PIP", desc: "Focuses on repairing damaged tissues from car accidents, surgeries, or repetitive strain.", icon: Stethoscope },
-            { name: "Deep Tissue Massage", time: "60/90 Min", price: "$125+", desc: "Firm strokes on deeper layers of muscle to relieve stubborn chronic tension.", icon: Heart },
-            { name: "Trigger Point Therapy", time: "60 Min", price: "$125", desc: "Focused pressure on 'knots' that cause referred pain in other parts of the body.", icon: Users }
+            { name: "Deep Tissue Massage", time: "60/90 Min", price: "$100+", desc: "Firm strokes on deeper layers of muscle to relieve stubborn chronic tension.", icon: Heart },
+            { name: "Trigger Point Therapy", time: "60 Min", price: "$100", desc: "Focused pressure on 'knots' that cause referred pain in other parts of the body.", icon: Users }
           ].map((s, i) => (
             <div key={i} className="p-10 bg-slate-50 rounded-[3rem] border border-slate-100 flex flex-col items-start hover:bg-white hover:shadow-2xl hover:border-teal-100 transition-all group">
                <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center mb-6 shadow-sm group-hover:bg-teal-700 group-hover:text-white transition-colors">
@@ -238,9 +238,9 @@ export default function App() {
             <p className="text-[10px] font-black uppercase text-slate-400 mb-4 tracking-widest">Select Session Length</p>
             <div className="grid grid-cols-1 gap-3">
               {[
-                { label: '60-Minute Session', price: '$125', url: BOOKING_URLS['60'] },
-                { label: '90-Minute Session', price: '$175', url: BOOKING_URLS['90'] },
-                { label: '2-Hour Session', price: '$225', url: BOOKING_URLS['120'] },
+                { label: '60-Minute Session', price: '$100', url: BOOKING_URLS['60'] },
+                { label: '90-Minute Session', price: '$150', url: BOOKING_URLS['90'] },
+                { label: '2-Hour Session', price: '$200', url: BOOKING_URLS['120'] },
               ].map(s => (
                 <a key={s.label} href={s.url} target="_blank" rel="noopener noreferrer" className="px-5 py-4 border border-slate-200 rounded-2xl font-bold text-slate-700 hover:border-teal-500 hover:bg-teal-50 transition-all flex items-center justify-between group">
                   <div>
