@@ -8,9 +8,9 @@ import {
 
 const PORTAL_URL = 'https://portal.pnwclinicalbodywork.com';
 const BOOKING_URLS = {
-  '60': 'https://link.marketsimple.pro/widget/booking/2hyurARKX9b2Bj9yJa3y',
-  '90': 'https://link.marketsimple.pro/widget/booking/xMRrbENBVce73Q5Nixhk',
-  '120': 'https://link.marketsimple.pro/widget/booking/U1hKaHNmpio3KrzdN34N',
+  '60': 'https://link.marketsimple.pro/widget/booking/B9DzMKLIm5ME2qwpjQQG',
+  '90': 'https://link.marketsimple.pro/widget/booking/vN2gOAHIkhu5Wb43lgHU',
+  '120': 'https://link.marketsimple.pro/widget/booking/KkjhAHMTyDowhES18uKX',
 };
 const BOOKING_URL = BOOKING_URLS['60'];
 
