@@ -379,7 +379,7 @@ export default function App() {
               </li>
               <li className="flex items-center gap-2">
                 <Phone size={16} className="text-teal-400" />
-                (360) 555-0123
+                (360) 521-0804
               </li>
             </ul>
           </div>
