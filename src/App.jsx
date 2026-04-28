@@ -255,7 +255,7 @@ export default function App() {
           <div className="text-center space-y-2">
             <p className="text-[10px] font-bold text-slate-400">MVA/PIP patients — start your intake here:</p>
             <a href={PORTAL_URL} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 text-xs font-black uppercase text-teal-700 hover:text-teal-900">
-              <LogIn size={14} /> Open Patient Portal
+              <LogIn size={14} /> Practitioner Portal
             </a>
           </div>
         </div>
@@ -284,7 +284,7 @@ export default function App() {
             <NavItem label="About Glen" id="about" />
             <NavItem label="Insurance" id="insurance" />
             <a href={PORTAL_URL} target="_blank" rel="noopener noreferrer" className="text-sm font-bold tracking-tight text-slate-500 hover:text-teal-600 transition-colors flex items-center gap-1.5">
-              <LogIn size={14} /> Patient Portal
+              <LogIn size={14} /> Practitioner Portal
             </a>
             <button
               onClick={() => setShowBooking(true)}
@@ -307,7 +307,7 @@ export default function App() {
             <NavItem label="About Glen" id="about" />
             <NavItem label="Insurance" id="insurance" />
             <a href={PORTAL_URL} target="_blank" rel="noopener noreferrer" onClick={() => setIsMenuOpen(false)} className="text-sm font-bold tracking-tight text-slate-500 hover:text-teal-600 transition-colors flex items-center gap-2">
-              <LogIn size={16} /> Patient Portal
+              <LogIn size={16} /> Practitioner Portal
             </a>
             <button
               onClick={() => { setShowBooking(true); setIsMenuOpen(false); }}
