@@ -375,7 +375,7 @@ export default function App() {
             <ul className="space-y-4 text-slate-400 text-sm font-bold">
               <li className="flex items-start gap-2">
                 <MapPin size={16} className="text-teal-400 shrink-0 mt-1" />
-                5514 NE 107th Ave. Ste. 100<br/>Vancouver, WA 98662
+                5514 NE 107th Ave. Ste. 101<br/>Vancouver, WA 98662
               </li>
               <li className="flex items-center gap-2">
                 <Phone size={16} className="text-teal-400" />
