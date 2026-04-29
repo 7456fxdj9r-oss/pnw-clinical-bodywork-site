@@ -222,6 +222,181 @@ export default function App() {
     </section>
   );
 
+  const LegalPage = ({ title, children }) => (
+    <section className="pt-32 pb-24 px-6 animate-in fade-in duration-500">
+      <div className="max-w-3xl mx-auto">
+        <button onClick={() => setActiveTab('home')} className="flex items-center gap-2 text-xs font-black uppercase text-teal-700 hover:text-teal-900 tracking-widest mb-8">
+          <ChevronRight size={14} className="rotate-180" /> Back to Home
+        </button>
+        <h1 className="text-4xl font-black text-slate-900 tracking-tighter mb-4">{title}</h1>
+        <p className="text-xs font-bold text-slate-400 uppercase tracking-widest mb-12">Effective Date: April 29, 2026</p>
+        <div className="prose prose-slate max-w-none space-y-8 text-slate-600 font-medium leading-relaxed">
+          {children}
+        </div>
+      </div>
+    </section>
+  );
+
+  const PrivacyView = () => (
+    <LegalPage title="Privacy Policy">
+      <div>
+        <h2 className="text-xl font-black text-slate-900 mb-3">Who We Are</h2>
+        <p>PNW Clinical Bodywork is a licensed massage therapy practice operated by Glen Arn, LMT #77218, located at 5514 NE 107th Ave. Ste. 101, Vancouver, WA 98662. This policy describes how we collect, use, and protect your personal information.</p>
+      </div>
+      <div>
+        <h2 className="text-xl font-black text-slate-900 mb-3">Information We Collect</h2>
+        <ul className="list-disc pl-6 space-y-2">
+          <li><strong>Contact information:</strong> Name, email, phone number, and mailing address when you book an appointment or submit an inquiry.</li>
+          <li><strong>Health information:</strong> Intake forms, treatment history, SOAP notes, and insurance details necessary for clinical care and billing. This information is protected under HIPAA (see our HIPAA Compliance page).</li>
+          <li><strong>Booking data:</strong> Appointment dates, times, and session preferences collected through our scheduling system.</li>
+          <li><strong>Website usage:</strong> We do not use third-party analytics or tracking scripts on this website. No cookies are set for advertising purposes.</li>
+        </ul>
+      </div>
+      <div>
+        <h2 className="text-xl font-black text-slate-900 mb-3">How We Use Your Information</h2>
+        <ul className="list-disc pl-6 space-y-2">
+          <li>To provide and coordinate your clinical care</li>
+          <li>To process insurance claims and PIP billing</li>
+          <li>To communicate appointment reminders and follow-ups</li>
+          <li>To comply with legal and regulatory requirements</li>
+        </ul>
+      </div>
+      <div>
+        <h2 className="text-xl font-black text-slate-900 mb-3">Information Sharing</h2>
+        <p>We do not sell, rent, or trade your personal information. We may share your information only in the following circumstances:</p>
+        <ul className="list-disc pl-6 space-y-2 mt-2">
+          <li><strong>Insurance companies:</strong> To process claims and PIP/auto accident billing on your behalf.</li>
+          <li><strong>Legal requirements:</strong> When required by law, court order, or regulatory authority.</li>
+          <li><strong>Service providers:</strong> Our scheduling and practice management platform (Go High Level) processes booking and communication data under a Business Associate Agreement.</li>
+        </ul>
+      </div>
+      <div>
+        <h2 className="text-xl font-black text-slate-900 mb-3">Data Security</h2>
+        <p>All data transmitted through this website and our clinical portal is encrypted via HTTPS/TLS. Access to patient records is restricted to authorized personnel only. See our HIPAA Compliance page for additional safeguards.</p>
+      </div>
+      <div>
+        <h2 className="text-xl font-black text-slate-900 mb-3">Your Rights</h2>
+        <p>You have the right to access, correct, or request deletion of your personal information. For health records, see our HIPAA Compliance page for your rights under federal law. For all other inquiries, contact us at (360) 521-0804.</p>
+      </div>
+      <div>
+        <h2 className="text-xl font-black text-slate-900 mb-3">Changes to This Policy</h2>
+        <p>We may update this policy as our practices evolve. The effective date at the top of this page reflects the most recent revision.</p>
+      </div>
+    </LegalPage>
+  );
+
+  const TermsView = () => (
+    <LegalPage title="Terms of Service">
+      <div>
+        <h2 className="text-xl font-black text-slate-900 mb-3">Agreement to Terms</h2>
+        <p>By accessing this website or booking an appointment with PNW Clinical Bodywork, you agree to the following terms. If you do not agree, please do not use our services.</p>
+      </div>
+      <div>
+        <h2 className="text-xl font-black text-slate-900 mb-3">Services</h2>
+        <p>PNW Clinical Bodywork provides clinical massage therapy services including myofascial release, injury rehabilitation, deep tissue massage, and trigger point therapy. Our services are therapeutic in nature and are not a substitute for medical diagnosis or treatment by a physician.</p>
+      </div>
+      <div>
+        <h2 className="text-xl font-black text-slate-900 mb-3">Appointments &amp; Cancellation</h2>
+        <ul className="list-disc pl-6 space-y-2">
+          <li>Appointments are scheduled through our online booking system or by phone at (360) 521-0804.</li>
+          <li>We require <strong>24 hours' notice</strong> for cancellations. Late cancellations or no-shows may be subject to a fee equal to the full session rate.</li>
+          <li>We reserve the right to limit scheduling to a maximum of 4 appointments per day to ensure quality of care.</li>
+        </ul>
+      </div>
+      <div>
+        <h2 className="text-xl font-black text-slate-900 mb-3">Pricing &amp; Payment</h2>
+        <ul className="list-disc pl-6 space-y-2">
+          <li>60-Minute Session: $100</li>
+          <li>90-Minute Session: $150</li>
+          <li>2-Hour Session: $200</li>
+          <li>PIP and auto accident claims are billed directly to the insurance provider.</li>
+          <li>Payment is due at the time of service unless covered by insurance.</li>
+        </ul>
+      </div>
+      <div>
+        <h2 className="text-xl font-black text-slate-900 mb-3">Referral Program</h2>
+        <p>When you refer a new client, both you and the referred client receive $25 off your next session. Referral credits are non-transferable and cannot be redeemed for cash.</p>
+      </div>
+      <div>
+        <h2 className="text-xl font-black text-slate-900 mb-3">Insurance &amp; PIP Claims</h2>
+        <p>We accept Regence BlueCross BlueShield and process PIP/auto accident claims. It is the client's responsibility to verify their coverage and provide accurate insurance information. We are not responsible for claims denied due to policy limitations or incorrect information.</p>
+      </div>
+      <div>
+        <h2 className="text-xl font-black text-slate-900 mb-3">Limitation of Liability</h2>
+        <p>PNW Clinical Bodywork provides services with professional care and skill. However, results vary by individual. We are not liable for outcomes that fall outside the scope of licensed massage therapy practice. By receiving treatment, you acknowledge that you have disclosed all relevant medical conditions and understand the nature of the services provided.</p>
+      </div>
+      <div>
+        <h2 className="text-xl font-black text-slate-900 mb-3">Website</h2>
+        <p>This website is provided for informational purposes. We make reasonable efforts to keep content accurate but do not guarantee completeness. Links to third-party services (booking, insurance portals) are provided for convenience and are governed by their own terms.</p>
+      </div>
+      <div>
+        <h2 className="text-xl font-black text-slate-900 mb-3">Contact</h2>
+        <p>Questions about these terms may be directed to PNW Clinical Bodywork at (360) 521-0804 or at our office: 5514 NE 107th Ave. Ste. 101, Vancouver, WA 98662.</p>
+      </div>
+    </LegalPage>
+  );
+
+  const HipaaView = () => (
+    <LegalPage title="HIPAA Compliance">
+      <div>
+        <h2 className="text-xl font-black text-slate-900 mb-3">Our Commitment</h2>
+        <p>PNW Clinical Bodywork is committed to protecting the privacy and security of your Protected Health Information (PHI) in accordance with the Health Insurance Portability and Accountability Act of 1996 (HIPAA) and the Washington State Health Care Information Act (RCW 70.02).</p>
+      </div>
+      <div>
+        <h2 className="text-xl font-black text-slate-900 mb-3">What Is Protected Health Information?</h2>
+        <p>PHI includes any individually identifiable health information related to your past, present, or future care. This includes your name, contact details, treatment records, SOAP notes, diagnosis codes, insurance information, and billing records.</p>
+      </div>
+      <div>
+        <h2 className="text-xl font-black text-slate-900 mb-3">How We Protect Your PHI</h2>
+        <ul className="list-disc pl-6 space-y-2">
+          <li><strong>Access controls:</strong> Only Glen Arn, LMT and authorized staff have access to patient records. Access is role-based and password-protected.</li>
+          <li><strong>Encryption:</strong> All data in transit is encrypted via TLS/HTTPS. Clinical records are stored in systems that encrypt data at rest.</li>
+          <li><strong>Session security:</strong> Our clinical portal enforces automatic logout after 20 minutes of inactivity.</li>
+          <li><strong>Business Associate Agreements:</strong> We maintain BAAs with all third-party vendors who handle PHI on our behalf.</li>
+          <li><strong>Minimum necessary:</strong> We only access, use, and share the minimum amount of PHI required to provide your care and process billing.</li>
+        </ul>
+      </div>
+      <div>
+        <h2 className="text-xl font-black text-slate-900 mb-3">Your Rights Under HIPAA</h2>
+        <p>As a patient, you have the right to:</p>
+        <ul className="list-disc pl-6 space-y-2 mt-2">
+          <li><strong>Access:</strong> Request a copy of your health records.</li>
+          <li><strong>Amendment:</strong> Request corrections to inaccurate information in your records.</li>
+          <li><strong>Accounting of disclosures:</strong> Request a list of entities to whom we have disclosed your PHI.</li>
+          <li><strong>Restriction:</strong> Request restrictions on certain uses or disclosures of your PHI.</li>
+          <li><strong>Confidential communications:</strong> Request that we communicate with you through a specific method or at a specific location.</li>
+          <li><strong>Complaint:</strong> File a complaint if you believe your privacy rights have been violated, without fear of retaliation.</li>
+        </ul>
+      </div>
+      <div>
+        <h2 className="text-xl font-black text-slate-900 mb-3">Permitted Uses and Disclosures</h2>
+        <p>We may use or disclose your PHI without your authorization for the following purposes:</p>
+        <ul className="list-disc pl-6 space-y-2 mt-2">
+          <li><strong>Treatment:</strong> To provide, coordinate, or manage your care.</li>
+          <li><strong>Payment:</strong> To bill and collect payment from you or your insurance provider, including PIP and auto accident claims.</li>
+          <li><strong>Healthcare operations:</strong> For quality assurance, compliance, and administrative functions.</li>
+          <li><strong>Legal requirements:</strong> When required by federal, state, or local law.</li>
+        </ul>
+        <p className="mt-2">All other uses and disclosures require your written authorization, which you may revoke at any time.</p>
+      </div>
+      <div>
+        <h2 className="text-xl font-black text-slate-900 mb-3">Breach Notification</h2>
+        <p>In the event of a breach of unsecured PHI, we will notify affected individuals within 60 days as required by the HIPAA Breach Notification Rule. If a breach affects more than 500 individuals, we will also notify the U.S. Department of Health and Human Services and local media.</p>
+      </div>
+      <div>
+        <h2 className="text-xl font-black text-slate-900 mb-3">Contact &amp; Complaints</h2>
+        <p>To exercise your rights, request information, or file a complaint, contact:</p>
+        <div className="mt-3 p-6 bg-slate-50 rounded-2xl border border-slate-100">
+          <p className="font-black text-slate-900">Glen Arn, LMT — Privacy Officer</p>
+          <p>PNW Clinical Bodywork</p>
+          <p>5514 NE 107th Ave. Ste. 101, Vancouver, WA 98662</p>
+          <p>Phone: (360) 521-0804</p>
+        </div>
+        <p className="mt-4">You may also file a complaint with the U.S. Department of Health and Human Services Office for Civil Rights at <span className="font-bold">hhs.gov/ocr</span>.</p>
+      </div>
+    </LegalPage>
+  );
+
   const closeBooking = () => { setShowBooking(false); setSelectedBookingUrl(null); };
 
   const BookingModal = () => (
@@ -346,6 +521,9 @@ export default function App() {
         {activeTab === 'home' && <HomeView />}
         {activeTab === 'services' && <ServicesView />}
         {activeTab === 'about' && <AboutView />}
+        {activeTab === 'privacy' && <PrivacyView />}
+        {activeTab === 'terms' && <TermsView />}
+        {activeTab === 'hipaa' && <HipaaView />}
         {(activeTab === 'insurance' || activeTab === 'blog') && (
           <div className="pt-40 pb-40 px-6 text-center">
             <h3 className="text-2xl font-black mb-4">Content coming soon</h3>
@@ -417,9 +595,9 @@ export default function App() {
         <div className="max-w-7xl mx-auto border-t border-slate-800 pt-12 flex flex-col md:flex-row justify-between gap-6 text-slate-500 text-[10px] font-black uppercase tracking-widest">
           <p>&copy; 2026 PNW Clinical Bodywork. All Rights Reserved.</p>
           <div className="flex gap-8">
-            <a href="#" className="hover:text-white transition-colors">Privacy Policy</a>
-            <a href="#" className="hover:text-white transition-colors">Terms of Service</a>
-            <a href="#" className="hover:text-white transition-colors">HIPAA Compliance</a>
+            <button onClick={() => { setActiveTab('privacy'); window.scrollTo(0,0); }} className="hover:text-white transition-colors">Privacy Policy</button>
+            <button onClick={() => { setActiveTab('terms'); window.scrollTo(0,0); }} className="hover:text-white transition-colors">Terms of Service</button>
+            <button onClick={() => { setActiveTab('hipaa'); window.scrollTo(0,0); }} className="hover:text-white transition-colors">HIPAA Compliance</button>
           </div>
         </div>
       </footer>
