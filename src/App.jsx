@@ -3,7 +3,7 @@ import {
   Menu, X, ChevronRight, PlayCircle, ShieldCheck,
   CheckCircle2, MapPin, Phone, MessageSquare, ArrowRight,
   Stethoscope, Activity, Heart, Users, Calendar, Clock,
-  Check, Quote, Star, LogIn
+  Check, Quote, Star, LogIn, CreditCard, User, AlertCircle
 } from 'lucide-react';
 
 const PORTAL_URL = 'https://portal.pnwclinicalbodywork.com';
@@ -397,6 +397,275 @@ export default function App() {
     </LegalPage>
   );
 
+  const [intakeSubmitting, setIntakeSubmitting] = useState(false);
+  const [intakeSuccess, setIntakeSuccess] = useState(false);
+  const [intakeError, setIntakeError] = useState(null);
+
+  const handleIntakeSubmit = async (e) => {
+    e.preventDefault();
+    setIntakeSubmitting(true);
+    setIntakeError(null);
+
+    const form = e.currentTarget;
+    const data = Object.fromEntries(new FormData(form));
+
+    // Collect pain area checkboxes
+    const painAreas = Array.from(form.querySelectorAll('input[name="painArea"]:checked')).map(cb => cb.value);
+
+    try {
+      const res = await fetch('/api/intake', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          firstName: data.firstName,
+          lastName: data.lastName,
+          email: data.email || undefined,
+          phone: data.phone,
+          dateOfBirth: data.dateOfBirth || undefined,
+          address: data.address || undefined,
+          accidentDate: data.accidentDate || undefined,
+          insuranceCompany: data.insuranceCompany || undefined,
+          claimNumber: data.claimNumber || undefined,
+          policyNumber: data.policyNumber || undefined,
+          adjusterName: data.adjusterName || undefined,
+          adjusterPhone: data.adjusterPhone || undefined,
+          attorneyName: data.attorneyName || undefined,
+          attorneyPhone: data.attorneyPhone || undefined,
+          lawFirm: data.lawFirm || undefined,
+          injuryDescription: data.injuryDescription || undefined,
+          painAreas: painAreas.length > 0 ? painAreas : undefined,
+          physicianName: data.physicianName || undefined,
+          currentMedications: data.currentMedications || undefined,
+          preExistingConditions: data.preExistingConditions || undefined,
+          consentToTreat: !!data.consentToTreat,
+          hipaaAcknowledged: !!data.hipaaAcknowledged,
+        }),
+      });
+
+      if (!res.ok) {
+        const err = await res.json();
+        throw new Error(err.error || 'Submission failed');
+      }
+
+      setIntakeSuccess(true);
+      form.reset();
+    } catch (err) {
+      setIntakeError(err.message);
+    } finally {
+      setIntakeSubmitting(false);
+    }
+  };
+
+  const IntakeView = () => {
+    if (intakeSuccess) {
+      return (
+        <section className="pt-32 pb-24 px-6 animate-in fade-in duration-500">
+          <div className="max-w-2xl mx-auto text-center">
+            <div className="w-20 h-20 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-6">
+              <CheckCircle2 className="text-emerald-600" size={40} />
+            </div>
+            <h2 className="text-4xl font-black text-slate-900 mb-4">Intake Received</h2>
+            <p className="text-lg text-slate-500 font-medium mb-8">
+              Thank you. Glen will review your information and contact you within one business day to schedule your first appointment.
+            </p>
+            <p className="text-sm text-slate-400 font-bold mb-10">
+              If you need immediate assistance, call <strong>(360) 521-0804</strong>.
+            </p>
+            <button
+              onClick={() => { setIntakeSuccess(false); setActiveTab('home'); }}
+              className="px-10 py-4 bg-teal-700 text-white rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-teal-800 transition-all"
+            >
+              Return Home
+            </button>
+          </div>
+        </section>
+      );
+    }
+
+    const inputClass = "w-full p-4 bg-slate-50 border border-slate-200 rounded-2xl font-bold text-slate-900 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent";
+    const labelClass = "text-[10px] font-black uppercase text-slate-400 tracking-widest mb-1 block";
+    const sectionTitle = (icon, title) => (
+      <h3 className="text-lg font-black text-slate-900 mb-6 flex items-center gap-2">{icon} {title}</h3>
+    );
+
+    return (
+      <section className="pt-32 pb-24 px-6 animate-in fade-in duration-500">
+        <div className="max-w-3xl mx-auto">
+          <div className="text-center mb-12">
+            <div className="inline-flex items-center gap-2 px-3 py-1 bg-emerald-50 text-emerald-700 rounded-full text-[10px] font-black uppercase tracking-widest mb-6">
+              <ShieldCheck size={14} /> HIPAA-Compliant Secure Form
+            </div>
+            <h2 className="text-4xl font-black text-slate-900 tracking-tighter mb-4">PIP / Auto Accident Intake</h2>
+            <p className="text-slate-500 font-medium max-w-xl mx-auto">
+              Complete this form to start your PIP claim. All information is encrypted and handled in accordance with HIPAA regulations.
+            </p>
+          </div>
+
+          <form onSubmit={handleIntakeSubmit} className="space-y-8">
+            {/* Patient Information */}
+            <div className="bg-white p-6 sm:p-10 rounded-[2.5rem] border border-slate-100 shadow-sm">
+              {sectionTitle(<User className="text-teal-600" size={22} />, 'Patient Information')}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+                <div>
+                  <label className={labelClass}>First Name *</label>
+                  <input name="firstName" type="text" required className={inputClass} />
+                </div>
+                <div>
+                  <label className={labelClass}>Last Name *</label>
+                  <input name="lastName" type="text" required className={inputClass} />
+                </div>
+                <div>
+                  <label className={labelClass}>Phone Number *</label>
+                  <input name="phone" type="tel" required className={inputClass} placeholder="(360) 555-0000" />
+                </div>
+                <div>
+                  <label className={labelClass}>Email Address</label>
+                  <input name="email" type="email" className={inputClass} />
+                </div>
+                <div>
+                  <label className={labelClass}>Date of Birth</label>
+                  <input name="dateOfBirth" type="date" className={inputClass} />
+                </div>
+                <div>
+                  <label className={labelClass}>Mailing Address</label>
+                  <input name="address" type="text" className={inputClass} placeholder="Street, City, State ZIP" />
+                </div>
+              </div>
+            </div>
+
+            {/* Accident & Insurance Details */}
+            <div className="bg-emerald-50/50 p-6 sm:p-10 rounded-[2.5rem] border border-emerald-100">
+              {sectionTitle(<AlertCircle className="text-emerald-700" size={22} />, 'Accident & Insurance Details')}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+                <div>
+                  <label className={labelClass}>Date of Accident *</label>
+                  <input name="accidentDate" type="date" required className={inputClass} />
+                </div>
+                <div>
+                  <label className={labelClass}>Auto Insurance Company *</label>
+                  <input name="insuranceCompany" type="text" required className={inputClass} placeholder="e.g. State Farm, GEICO" />
+                </div>
+                <div>
+                  <label className={labelClass}>Claim Number</label>
+                  <input name="claimNumber" type="text" className={inputClass} />
+                </div>
+                <div>
+                  <label className={labelClass}>Policy Number</label>
+                  <input name="policyNumber" type="text" className={inputClass} />
+                </div>
+                <div>
+                  <label className={labelClass}>Adjuster Name</label>
+                  <input name="adjusterName" type="text" className={inputClass} />
+                </div>
+                <div>
+                  <label className={labelClass}>Adjuster Phone</label>
+                  <input name="adjusterPhone" type="tel" className={inputClass} />
+                </div>
+              </div>
+              <div className="mt-6">
+                <label className={labelClass}>Describe the Accident & Your Injuries</label>
+                <textarea name="injuryDescription" rows={3} className={inputClass + ' resize-none'} placeholder="e.g. Rear-ended at a stoplight, experiencing neck and lower back pain..." />
+              </div>
+            </div>
+
+            {/* Pain Areas */}
+            <div className="bg-white p-6 sm:p-10 rounded-[2.5rem] border border-slate-100 shadow-sm">
+              {sectionTitle(<Activity className="text-teal-600" size={22} />, 'Areas of Pain')}
+              <p className="text-sm text-slate-500 font-medium mb-4">Select all areas where you are experiencing pain or discomfort:</p>
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
+                {['Neck / Cervical', 'Upper Back / Thoracic', 'Lower Back / Lumbar', 'Left Shoulder', 'Right Shoulder', 'Left Arm / Hand', 'Right Arm / Hand', 'Left Hip', 'Right Hip', 'Left Leg / Knee', 'Right Leg / Knee', 'Headaches'].map((area) => (
+                  <label key={area} className="flex items-center gap-2 p-3 bg-slate-50 rounded-xl border border-slate-100 cursor-pointer hover:bg-teal-50 hover:border-teal-200 transition-all text-sm font-bold text-slate-700">
+                    <input type="checkbox" name="painArea" value={area} className="w-4 h-4 rounded border-slate-300 text-teal-600 focus:ring-teal-500" />
+                    {area}
+                  </label>
+                ))}
+              </div>
+            </div>
+
+            {/* Attorney (if applicable) */}
+            <div className="bg-white p-6 sm:p-10 rounded-[2.5rem] border border-slate-100 shadow-sm">
+              {sectionTitle(<ShieldCheck className="text-slate-500" size={22} />, 'Attorney Information (if applicable)')}
+              <p className="text-sm text-slate-500 font-medium mb-4">If you have retained an attorney for your accident claim, provide their details below.</p>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+                <div>
+                  <label className={labelClass}>Attorney Name</label>
+                  <input name="attorneyName" type="text" className={inputClass} />
+                </div>
+                <div>
+                  <label className={labelClass}>Law Firm</label>
+                  <input name="lawFirm" type="text" className={inputClass} />
+                </div>
+                <div>
+                  <label className={labelClass}>Attorney Phone</label>
+                  <input name="attorneyPhone" type="tel" className={inputClass} />
+                </div>
+              </div>
+            </div>
+
+            {/* Medical History */}
+            <div className="bg-white p-6 sm:p-10 rounded-[2.5rem] border border-slate-100 shadow-sm">
+              {sectionTitle(<Heart className="text-teal-600" size={22} />, 'Medical History')}
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+                <div>
+                  <label className={labelClass}>Primary Care Physician</label>
+                  <input name="physicianName" type="text" className={inputClass} />
+                </div>
+                <div>
+                  <label className={labelClass}>Current Medications</label>
+                  <input name="currentMedications" type="text" className={inputClass} placeholder="List any current medications" />
+                </div>
+              </div>
+              <div className="mt-4">
+                <label className={labelClass}>Pre-existing Conditions</label>
+                <textarea name="preExistingConditions" rows={2} className={inputClass + ' resize-none'} placeholder="List any conditions relevant to your injury (e.g. prior back surgery, arthritis)" />
+              </div>
+            </div>
+
+            {/* Consent */}
+            <div className="bg-slate-50 p-6 sm:p-10 rounded-[2.5rem] border border-slate-200">
+              {sectionTitle(<ShieldCheck className="text-teal-700" size={22} />, 'Consent & Acknowledgment')}
+              <div className="space-y-4">
+                <label className="flex items-start gap-3 cursor-pointer">
+                  <input type="checkbox" name="consentToTreat" value="yes" required className="w-5 h-5 rounded border-slate-300 text-teal-600 focus:ring-teal-500 mt-0.5" />
+                  <span className="text-sm font-medium text-slate-700">
+                    <strong>Consent to Treat:</strong> I authorize PNW Clinical Bodywork and Glen Arn, LMT to provide massage therapy treatment for my injuries. I understand the nature of the services offered and that results may vary. *
+                  </span>
+                </label>
+                <label className="flex items-start gap-3 cursor-pointer">
+                  <input type="checkbox" name="hipaaAcknowledged" value="yes" required className="w-5 h-5 rounded border-slate-300 text-teal-600 focus:ring-teal-500 mt-0.5" />
+                  <span className="text-sm font-medium text-slate-700">
+                    <strong>HIPAA Acknowledgment:</strong> I acknowledge that my health information will be collected, used, and protected in accordance with HIPAA regulations and PNW Clinical Bodywork's <button type="button" onClick={() => { setActiveTab('privacy'); window.scrollTo(0,0); }} className="text-teal-600 underline">Privacy Policy</button>. *
+                  </span>
+                </label>
+              </div>
+            </div>
+
+            {/* Submit */}
+            {intakeError && (
+              <div className="p-4 bg-red-50 border border-red-200 rounded-2xl text-red-700 font-bold text-sm text-center">
+                {intakeError}
+              </div>
+            )}
+            <button
+              type="submit"
+              disabled={intakeSubmitting}
+              className="w-full py-6 bg-teal-700 text-white rounded-[2rem] font-black text-xl shadow-2xl shadow-teal-700/30 hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {intakeSubmitting ? 'Submitting...' : 'Submit Secure Intake Form'}
+            </button>
+            <p className="text-center text-xs text-slate-400 font-medium">
+              Your information is encrypted and transmitted securely. By submitting this form, you agree to our{' '}
+              <button type="button" onClick={() => { setActiveTab('terms'); window.scrollTo(0,0); }} className="text-teal-600 underline">Terms of Service</button>
+              {' '}and{' '}
+              <button type="button" onClick={() => { setActiveTab('hipaa'); window.scrollTo(0,0); }} className="text-teal-600 underline">HIPAA Compliance</button>
+              {' '}policies.
+            </p>
+          </form>
+        </div>
+      </section>
+    );
+  };
+
   const closeBooking = () => { setShowBooking(false); setSelectedBookingUrl(null); };
 
   const BookingModal = () => (
@@ -441,9 +710,9 @@ export default function App() {
             </div>
             <div className="text-center space-y-2">
               <p className="text-[10px] font-bold text-slate-400">MVA/PIP patients — start your intake here:</p>
-              <a href={PORTAL_URL} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-2 text-xs font-black uppercase text-teal-700 hover:text-teal-900">
-                <LogIn size={14} /> Practitioner Portal
-              </a>
+              <button onClick={() => { closeBooking(); setActiveTab('pip-intake'); window.scrollTo(0,0); }} className="inline-flex items-center gap-2 text-xs font-black uppercase text-teal-700 hover:text-teal-900">
+                <ArrowRight size={14} /> PIP Intake Form
+              </button>
             </div>
           </div>
         ) : (
@@ -521,13 +790,149 @@ export default function App() {
         {activeTab === 'home' && <HomeView />}
         {activeTab === 'services' && <ServicesView />}
         {activeTab === 'about' && <AboutView />}
+        {activeTab === 'pip-intake' && <IntakeView />}
         {activeTab === 'privacy' && <PrivacyView />}
         {activeTab === 'terms' && <TermsView />}
         {activeTab === 'hipaa' && <HipaaView />}
-        {(activeTab === 'insurance' || activeTab === 'blog') && (
+        {activeTab === 'insurance' && (
+          <section className="pt-32 pb-24 px-6 animate-in fade-in duration-500">
+            <div className="max-w-7xl mx-auto">
+              <div className="text-center mb-20">
+                <h2 className="text-sm font-black text-teal-600 uppercase tracking-widest mb-4">Insurance & Billing</h2>
+                <h3 className="text-5xl font-black text-slate-900 tracking-tighter">We Handle the Paperwork</h3>
+                <p className="mt-6 text-slate-500 max-w-2xl mx-auto font-medium">Whether you're paying out-of-pocket or filing through insurance, we make the process simple so you can focus on recovery.</p>
+              </div>
+
+              {/* PIP / Auto Accident — Primary CTA */}
+              <div className="bg-emerald-50 p-8 sm:p-12 rounded-[3rem] border border-emerald-100 mb-12">
+                <div className="grid lg:grid-cols-2 gap-10 items-center">
+                  <div>
+                    <div className="inline-flex items-center gap-2 px-3 py-1 bg-emerald-100 text-emerald-700 rounded-full text-[10px] font-black uppercase tracking-widest mb-6">
+                      <ShieldCheck size={14} /> PIP / Auto Accident Claims
+                    </div>
+                    <h3 className="text-3xl font-black text-emerald-900 mb-4 tracking-tight">Injured in a Car Accident?</h3>
+                    <p className="text-emerald-800 font-medium leading-relaxed mb-6">
+                      Washington State PIP (Personal Injury Protection) covers massage therapy for motor vehicle accident injuries. We bill your auto insurance directly — you pay nothing out of pocket in most cases.
+                    </p>
+                    <ul className="space-y-3 mb-8">
+                      {[
+                        'We bill your auto insurance company directly',
+                        'No upfront cost to you in most PIP cases',
+                        'We handle all claim paperwork and CMS-1500 forms',
+                        'Coordination with your attorney if applicable',
+                        'Detailed treatment documentation for your claim',
+                      ].map((item, i) => (
+                        <li key={i} className="flex items-start gap-3 text-emerald-800 font-medium">
+                          <CheckCircle2 size={16} className="text-emerald-600 mt-1 flex-shrink-0" />
+                          {item}
+                        </li>
+                      ))}
+                    </ul>
+                    <button onClick={() => { setActiveTab('pip-intake'); window.scrollTo(0,0); }} className="inline-flex items-center gap-3 px-8 py-4 bg-emerald-600 text-white rounded-2xl font-black text-xs uppercase tracking-widest shadow-xl shadow-emerald-600/20 hover:scale-105 transition-all">
+                      Start Your PIP Claim <ArrowRight size={16} />
+                    </button>
+                  </div>
+                  <div className="space-y-4">
+                    <div className="bg-white p-6 rounded-2xl border border-emerald-100">
+                      <h4 className="text-sm font-black text-emerald-900 uppercase tracking-widest mb-3">How PIP Billing Works</h4>
+                      <ol className="space-y-4">
+                        {[
+                          { step: '1', title: 'Intake', desc: 'Submit your claim number, insurance company, and accident date through our secure intake portal.' },
+                          { step: '2', title: 'Treatment', desc: 'Receive clinical massage therapy. We document every session with detailed SOAP notes.' },
+                          { step: '3', title: 'We Bill', desc: 'We generate CMS-1500 claim forms and submit them directly to your auto insurance.' },
+                          { step: '4', title: 'You Heal', desc: 'Focus on recovery. We handle follow-ups with the insurance company.' },
+                        ].map((item) => (
+                          <li key={item.step} className="flex items-start gap-3">
+                            <span className="w-7 h-7 bg-emerald-100 text-emerald-700 rounded-lg flex items-center justify-center text-xs font-black flex-shrink-0">{item.step}</span>
+                            <div>
+                              <p className="text-sm font-black text-slate-900">{item.title}</p>
+                              <p className="text-xs text-slate-500 font-medium">{item.desc}</p>
+                            </div>
+                          </li>
+                        ))}
+                      </ol>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              {/* Accepted Insurance + Out of Pocket */}
+              <div className="grid md:grid-cols-2 gap-8 mb-12">
+                <div className="bg-white p-8 sm:p-10 rounded-[2.5rem] border border-slate-100 shadow-sm">
+                  <div className="w-14 h-14 bg-teal-50 rounded-2xl flex items-center justify-center mb-6">
+                    <ShieldCheck className="text-teal-600" size={28} />
+                  </div>
+                  <h4 className="text-2xl font-black text-slate-900 mb-4">Accepted Insurance</h4>
+                  <div className="space-y-4">
+                    <div className="p-4 bg-teal-50 rounded-2xl border border-teal-100">
+                      <p className="text-lg font-black text-teal-900">Regence BlueCross BlueShield</p>
+                      <p className="text-xs font-bold text-teal-600 mt-1">In-network provider</p>
+                    </div>
+                    <div className="p-4 bg-slate-50 rounded-2xl border border-slate-100">
+                      <p className="text-lg font-black text-slate-700">Auto Insurance / PIP</p>
+                      <p className="text-xs font-bold text-slate-500 mt-1">All WA auto insurance carriers accepted for MVA claims</p>
+                    </div>
+                  </div>
+                  <p className="mt-6 text-sm text-slate-500 font-medium leading-relaxed">
+                    Don't see your carrier? Contact us at <strong>(360) 521-0804</strong> — we can verify your coverage and discuss options.
+                  </p>
+                </div>
+
+                <div className="bg-white p-8 sm:p-10 rounded-[2.5rem] border border-slate-100 shadow-sm">
+                  <div className="w-14 h-14 bg-slate-100 rounded-2xl flex items-center justify-center mb-6">
+                    <CreditCard className="text-slate-600" size={28} />
+                  </div>
+                  <h4 className="text-2xl font-black text-slate-900 mb-4">Out-of-Pocket Rates</h4>
+                  <div className="space-y-3">
+                    {[
+                      { session: '60-Minute Session', price: '$100' },
+                      { session: '90-Minute Session', price: '$150' },
+                      { session: '2-Hour Session', price: '$200' },
+                    ].map((item) => (
+                      <div key={item.session} className="flex justify-between items-center p-4 bg-slate-50 rounded-2xl border border-slate-100">
+                        <span className="font-bold text-slate-700">{item.session}</span>
+                        <span className="font-black text-teal-700 text-lg">{item.price}</span>
+                      </div>
+                    ))}
+                  </div>
+                  <p className="mt-6 text-sm text-slate-500 font-medium leading-relaxed">
+                    Payment is due at the time of service. We accept cash, check, and major credit cards.
+                  </p>
+                  <button
+                    onClick={() => setShowBooking(true)}
+                    className="mt-6 w-full py-4 bg-teal-700 text-white rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-teal-800 transition-all shadow-lg shadow-teal-700/20"
+                  >
+                    Book a Session
+                  </button>
+                </div>
+              </div>
+
+              {/* FAQ */}
+              <div className="bg-slate-50 p-8 sm:p-12 rounded-[3rem] border border-slate-100">
+                <h4 className="text-2xl font-black text-slate-900 mb-8 tracking-tight text-center">Common Questions</h4>
+                <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
+                  {[
+                    { q: 'Do I need a referral from my doctor?', a: 'No. In Washington State, you can see a licensed massage therapist without a physician referral.' },
+                    { q: 'How many sessions does PIP cover?', a: 'PIP coverage varies by policy, but most plans cover treatment related to your accident injuries until you reach maximum medical improvement. We track your progress with detailed SOAP notes to support your claim.' },
+                    { q: 'What if my PIP claim is denied?', a: 'We provide complete documentation to support appeals. If you have an attorney, we coordinate directly with their office.' },
+                    { q: 'Can I use health insurance and PIP together?', a: 'PIP is primary for auto accident injuries in Washington State. Once PIP benefits are exhausted, we can discuss health insurance or out-of-pocket options.' },
+                    { q: 'Do you offer payment plans?', a: 'Yes. For out-of-pocket patients, we offer treatment packages that reduce the per-session cost. Ask about our Recovery Bundle and Wellness Pack.' },
+                    { q: 'What is a superbill?', a: 'A superbill is an itemized receipt with CPT and diagnosis codes that you can submit to your health insurance for potential reimbursement on out-of-pocket sessions.' },
+                  ].map((item, i) => (
+                    <div key={i} className="p-6 bg-white rounded-2xl border border-slate-100">
+                      <h5 className="font-black text-slate-900 mb-2">{item.q}</h5>
+                      <p className="text-sm text-slate-500 font-medium leading-relaxed">{item.a}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </section>
+        )}
+        {activeTab === 'blog' && (
           <div className="pt-40 pb-40 px-6 text-center">
             <h3 className="text-2xl font-black mb-4">Content coming soon</h3>
-            <p className="text-slate-500 mb-8 font-medium">We are currently drafting our {activeTab} information.</p>
+            <p className="text-slate-500 mb-8 font-medium">We are currently drafting our blog content.</p>
             <button onClick={() => setActiveTab('home')} className="text-teal-600 font-black uppercase text-xs tracking-widest flex items-center justify-center gap-2 mx-auto">
                Return Home <ArrowRight size={14} />
             </button>
@@ -542,9 +947,9 @@ export default function App() {
           <p className="text-emerald-800 font-medium mb-8 leading-relaxed">
             We specialize in Motor Vehicle Accident (MVA) recovery. We bill the insurance companies directly so you can focus on healing, not paperwork.
           </p>
-          <a href={PORTAL_URL} target="_blank" rel="noopener noreferrer" className="self-start flex items-center gap-3 px-8 py-4 bg-emerald-600 text-white rounded-2xl font-black text-xs uppercase tracking-widest shadow-xl shadow-emerald-600/20 hover:scale-105 transition-all">
+          <button onClick={() => { setActiveTab('pip-intake'); window.scrollTo(0,0); }} className="self-start flex items-center gap-3 px-8 py-4 bg-emerald-600 text-white rounded-2xl font-black text-xs uppercase tracking-widest shadow-xl shadow-emerald-600/20 hover:scale-105 transition-all">
             Start Insurance Inquiry <ArrowRight size={16} />
-          </a>
+          </button>
         </div>
         <div className="bg-teal-50 p-12 rounded-[3rem] border border-teal-100 flex flex-col justify-center">
           <h3 className="text-3xl font-black text-teal-900 mb-6 tracking-tight">Referral Program</h3>
