@@ -79,7 +79,7 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
     if (body.painAreas?.length) customFields.push({ key: 'contact.pain_areas', field_value: body.painAreas.join(', ') });
     if (body.physicianName) customFields.push({ key: 'contact.physician_name', field_value: body.physicianName });
     if (body.currentMedications) customFields.push({ key: 'contact.current_medications', field_value: body.currentMedications });
-    if (body.preExistingConditions) customFields.push({ key: 'contact.pre_existing_conditions', field_value: body.preExistingConditions });
+    if (body.preExistingConditions) customFields.push({ key: 'contact.preexisting_conditions', field_value: body.preExistingConditions });
 
     // Create contact in GHL
     const ghlResponse = await fetch('https://services.leadconnectorhq.com/contacts/', {
