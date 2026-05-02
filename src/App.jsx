@@ -103,6 +103,67 @@ const BLOG_ARTICLES = [
       { heading: 'The Role of Home Care', body: 'What you do between sessions matters as much as what happens during them. Glen prescribes specific stretches and exercises tailored to your condition. Patients who follow their home care plan consistently recover 30-40% faster than those who rely on in-office treatment alone.' },
     ]
   },
+  // ── Patient Stories ──────────────────────────────────────────────────
+  {
+    id: 'diane-scoliosis-recovery',
+    title: 'From Constant Discomfort to the Dance Floor',
+    excerpt: 'Diane had a 38-degree spinal curve and thought her active days were behind her. Six months later, she danced at her granddaughter\'s wedding for three hours.',
+    date: 'April 12, 2026',
+    readTime: '4 min read',
+    category: 'Patient Story',
+    content: [
+      { heading: 'Living With a 38-Degree Curve', body: 'Diane had lived with scoliosis her entire adult life. By her mid-60s, the compensatory muscle patterns had become so entrenched that daily discomfort was her baseline. She\'d tried relaxation massages, chiropractic adjustments, and physical therapy — each provided temporary relief, but nothing addressed the root tension patterns that decades of spinal curvature had created.' },
+      { heading: 'One Goal: Stand for the Ceremony', body: 'When Diane first came to PNW Clinical Bodywork, her granddaughter\'s wedding was six months away. Her only goal was modest: stand through the ceremony without needing to sit down. She wasn\'t thinking about dancing. She wasn\'t thinking about the beach trip she\'d cancelled. She just wanted to be present.' },
+      { heading: 'The Clinical Approach', body: 'Glen identified the muscle groups that had "combined and tightened" over decades — the deep paraspinal muscles, the quadratus lumborum, and the rotator cuff complex on her convex side. Rather than a general full-body massage, every session targeted specific fascial restrictions contributing to her pain pattern. They worked twice a week for the first month, then weekly.' },
+      { heading: 'The Shift', body: 'Around session six, Diane noticed she was sleeping through the night for the first time in years. By session ten, she realized she\'d stopped taking ibuprofen before bed. The pain wasn\'t gone — with a structural curve, some discomfort is permanent — but it had shifted from a constant presence to an occasional visitor.' },
+      { heading: 'The Wedding', body: 'Diane didn\'t just stand for the ceremony. She danced for three hours. She danced with her granddaughter, with her husband, with people she hadn\'t danced with in a decade. Two weeks later, she took the beach trip she\'d previously cancelled. She still comes in monthly for maintenance, and her pain scale has dropped from a daily 7 to an occasional 3.' },
+    ]
+  },
+  {
+    id: 'marcus-mva-recovery',
+    title: 'Rear-Ended on I-205: How Marcus Got Back to Work in 8 Weeks',
+    excerpt: 'A rear-end collision left Marcus with debilitating neck and shoulder pain. His PIP coverage paid for clinical massage that got him back to his construction job.',
+    date: 'April 8, 2026',
+    readTime: '4 min read',
+    category: 'Patient Story',
+    content: [
+      { heading: 'The Accident', body: 'Marcus was stopped at a red light on I-205 near the Mill Plain exit when a distracted driver hit him at roughly 35 mph. The airbags didn\'t deploy — it wasn\'t that kind of impact — but the whiplash was severe. Within 24 hours, Marcus couldn\'t turn his head more than 20 degrees in either direction. As a construction foreman, he couldn\'t work.' },
+      { heading: 'The Insurance Maze', body: 'Marcus\'s auto insurance had PIP coverage, but he didn\'t know it covered massage therapy. His doctor prescribed muscle relaxants and rest, but after two weeks of no improvement, a coworker who\'d been through a similar accident told him about Glen. "Just go. Your PIP pays for it. You don\'t pay anything out of pocket."' },
+      { heading: 'First Assessment', body: 'Glen\'s initial assessment found severe bilateral cervical restriction, elevated trapezius tone, and referred pain into both shoulders. Pain scale: 8/10. Range of motion: roughly 40% of normal. Glen started with gentle myofascial release of the cervical fascia — no deep pressure on the first visit, because the tissues were still acutely inflamed.' },
+      { heading: 'The Treatment Arc', body: 'Marcus came in twice a week for the first four weeks, then once a week for the next four. Each session built on the last. As the acute inflammation resolved, Glen progressed to deeper trigger point work in the suboccipital muscles and scalenes. Marcus did the prescribed home stretches religiously — chin tucks, doorway stretches, ice after sessions.' },
+      { heading: 'Back on the Job', body: 'At week six, Marcus returned to light duty. At week eight, he was back to full duties. His final pain scale was 1/10 — occasional tightness at the end of a long day, managed with the stretches Glen taught him. Total cost to Marcus: $0. His PIP covered every session. Glen handled all the CMS-1500 paperwork and submitted claims directly to State Farm.' },
+    ]
+  },
+  {
+    id: 'sarah-desk-worker',
+    title: 'The Software Developer Who Couldn\'t Type Without Pain',
+    excerpt: 'Sarah\'s wrist and forearm pain threatened her career. After being told to "just take breaks," she found a clinical approach that actually fixed the problem.',
+    date: 'April 3, 2026',
+    readTime: '4 min read',
+    category: 'Patient Story',
+    content: [
+      { heading: 'When Ergonomics Isn\'t Enough', body: 'Sarah is a software developer who works remotely from her home in Camas. She\'d spent $2,000 on ergonomic equipment — a split keyboard, a vertical mouse, a sit-stand desk, a monitor arm. She\'d followed every RSI prevention guide on the internet. And yet, by 2 PM every day, her right forearm burned and her wrist ached so badly she had to stop typing.' },
+      { heading: 'The Diagnosis Merry-Go-Round', body: 'Her doctor said it was carpal tunnel. The nerve conduction test came back normal. Then it was "tendinitis." Then "overuse syndrome." She was told to take breaks, stretch more, and consider switching careers. As a senior developer making six figures, that last suggestion wasn\'t helpful.' },
+      { heading: 'Looking Upstream', body: 'Glen\'s assessment revealed something the other providers had missed: the problem wasn\'t in Sarah\'s wrist. It was in her right pec minor, her anterior scalene, and her subscapularis — all muscles in her chest and shoulder that had shortened from years of forward-rounded posture. These muscles were compressing the brachial plexus, the nerve bundle that runs from the neck into the arm. Her wrist was where she felt the pain; her shoulder and chest were where it originated.' },
+      { heading: 'Targeted Treatment', body: 'Glen spent almost no time on Sarah\'s wrist and forearm. Instead, he focused on releasing the pec minor and subscapularis using specific myofascial techniques, followed by scalene work to decompress the nerve pathway. The first session was intense — Sarah described it as "productive pain, not injury pain." By the end of the session, her grip strength had noticeably improved.' },
+      { heading: 'The Result', body: 'After six weekly sessions, Sarah could type a full workday without pain for the first time in two years. She still comes in monthly for maintenance, and she\'s added Glen\'s prescribed chest stretches to her morning routine. Total out-of-pocket cost: $600 (six sessions at $100). She\'d spent three times that on ergonomic equipment that addressed the symptom, not the cause.' },
+    ]
+  },
+  {
+    id: 'tom-knee-surgery-rehab',
+    title: 'After Knee Replacement: Why Post-Surgical Massage Made the Difference',
+    excerpt: 'Tom\'s knee replacement went well, but his recovery stalled at 90 degrees of flexion. Clinical massage addressed the scar tissue and muscle guarding his surgeon couldn\'t.',
+    date: 'March 28, 2026',
+    readTime: '4 min read',
+    category: 'Patient Story',
+    content: [
+      { heading: 'A Successful Surgery With a Stuck Recovery', body: 'Tom\'s total knee replacement at 68 was textbook successful. His surgeon was pleased. His physical therapist was optimistic. But eight weeks post-op, Tom\'s knee flexion had plateaued at 90 degrees. He needed 120 degrees to climb stairs normally, get in and out of his truck, and kneel in his garden — the three things he\'d had the surgery to get back to.' },
+      { heading: 'The Missing Piece', body: 'Physical therapy was strengthening the right muscles, but Tom\'s quadriceps and hamstrings were locked in a protective guarding pattern. His body was treating the surgical site like an active injury, keeping the surrounding muscles contracted to "protect" the knee. Traditional PT exercises couldn\'t override this neurological reflex. The muscles needed to be manually released.' },
+      { heading: 'Glen\'s Approach', body: 'Glen worked above and below the knee — the quadriceps, IT band, hamstrings, and calf muscles — using slow, sustained myofascial release. He avoided the surgical incision site entirely for the first two sessions, focusing on the muscle guarding pattern that was limiting Tom\'s range. By session three, as the surrounding tissues relaxed, Glen began gentle cross-fiber work along the scar tissue margins.' },
+      { heading: 'Breaking Through the Plateau', body: 'After the first session, Tom gained 8 degrees of flexion. After four sessions over two weeks, he was at 110 degrees. His physical therapist noticed the difference immediately — the PT exercises that had been ineffective suddenly started working because the muscles were no longer guarding.' },
+      { heading: 'Full Recovery', body: 'At twelve weeks post-surgery (four weeks after starting with Glen), Tom hit 125 degrees of flexion. He could climb stairs, get in his truck, and kneel in his garden. His surgeon called it "an excellent outcome." Tom credits the combination of PT and clinical massage: "The PT gave me the exercises. Glen gave my muscles permission to actually do them."' },
+    ]
+  },
 ];
 
 // ── Booking Modal ────────────────────────────────────────────────────────
@@ -798,19 +859,30 @@ function InsuranceView() {
 }
 
 function BlogListView() {
+  const [filter, setFilter] = useState('all');
+  const categories = ['all', ...new Set(BLOG_ARTICLES.map(a => a.category))];
+  const filtered = filter === 'all' ? BLOG_ARTICLES : BLOG_ARTICLES.filter(a => a.category === filter);
+
   return (
     <section className="pt-32 pb-24 px-6 animate-in fade-in duration-500">
       <div className="max-w-7xl mx-auto">
-        <div className="text-center mb-16">
+        <div className="text-center mb-12">
           <h2 className="text-sm font-black text-teal-600 uppercase tracking-widest mb-4">Clinical Insights</h2>
           <h3 className="text-3xl sm:text-5xl font-black text-slate-900 tracking-tighter">Recovery Resources</h3>
           <p className="mt-6 text-slate-500 max-w-2xl mx-auto font-medium">Expert guidance on injury recovery, insurance claims, and clinical massage therapy from Glen Arn, LMT.</p>
         </div>
+        <div className="flex flex-wrap justify-center gap-2 mb-12">
+          {categories.map(cat => (
+            <button key={cat} onClick={() => setFilter(cat)} className={`px-4 py-2 rounded-full text-xs font-black uppercase tracking-widest transition-all ${filter === cat ? 'bg-teal-700 text-white shadow-lg' : 'bg-white border border-slate-200 text-slate-500 hover:border-teal-300 hover:text-teal-700'}`}>
+              {cat === 'all' ? 'All' : cat}
+            </button>
+          ))}
+        </div>
         <div className="grid md:grid-cols-2 gap-8">
-          {BLOG_ARTICLES.map((article) => (
+          {filtered.map((article) => (
             <Link key={article.id} to={`/blog/${article.id}`} className="text-left bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-sm hover:shadow-xl hover:border-teal-100 transition-all group block">
               <div className="flex items-center gap-3 mb-4">
-                <span className="text-[10px] font-black uppercase tracking-widest text-teal-600 bg-teal-50 px-3 py-1 rounded-full">{article.category}</span>
+                <span className={`text-[10px] font-black uppercase tracking-widest px-3 py-1 rounded-full ${article.category === 'Patient Story' ? 'text-emerald-600 bg-emerald-50' : 'text-teal-600 bg-teal-50'}`}>{article.category}</span>
                 <span className="text-[10px] font-bold text-slate-400">{article.readTime}</span>
               </div>
               <h4 className="text-xl font-black text-slate-900 mb-3 group-hover:text-teal-700 transition-colors">{article.title}</h4>
