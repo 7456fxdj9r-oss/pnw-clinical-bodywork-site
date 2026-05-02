@@ -3,7 +3,7 @@
   "private": true,
   "version": "0.1.0",
   "type": "module",
-  "description": "Public marketing website for PNW Clinical Bodywork (healingworkscenter.com)",
+  "description": "Public marketing website for PNW Clinical Bodywork (pnwclinicalbodywork.com)",
   "scripts": {
     "dev": "vite",
     "build": "vite build",

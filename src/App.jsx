@@ -2,9 +2,9 @@ import React, { useState, useEffect, createContext, useContext } from 'react';
 import { Routes, Route, Link, NavLink, useParams, useNavigate, useLocation, Navigate } from 'react-router-dom';
 import {
   Menu, X, ChevronRight, PlayCircle, ShieldCheck,
-  CheckCircle2, MapPin, Phone, MessageSquare, ArrowRight,
-  Stethoscope, Activity, Heart, Users, Calendar, Clock,
-  Check, Quote, Star, LogIn, CreditCard, User, AlertCircle
+  CheckCircle2, MapPin, Phone, ArrowRight,
+  Stethoscope, Activity, Heart, Users,
+  Star, LogIn, CreditCard, User, AlertCircle
 } from 'lucide-react';
 
 const PORTAL_URL = 'https://portal.pnwclinicalbodywork.com';
@@ -564,7 +564,6 @@ function IntakeView() {
   const [submitting, setSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState(null);
-  const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
     e.preventDefault();
