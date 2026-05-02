@@ -32,7 +32,7 @@ export default function App() {
 
   const NavItem = ({ label, id }) => (
     <button
-      onClick={() => { setActiveTab(id); setIsMenuOpen(false); window.scrollTo(0,0); }}
+      onClick={() => { setActiveTab(id); setIsMenuOpen(false); setSelectedArticle(null); window.scrollTo(0,0); }}
       className={`text-sm font-bold tracking-tight transition-colors ${activeTab === id ? 'text-teal-700' : 'text-slate-500 hover:text-teal-600'}`}
     >
       {label}
@@ -666,6 +666,75 @@ export default function App() {
     );
   };
 
+  const [selectedArticle, setSelectedArticle] = useState(null);
+
+  const BLOG_ARTICLES = [
+    {
+      id: 'pip-claims-101',
+      title: 'PIP Claims 101: What Every Washington Driver Should Know',
+      excerpt: 'If you\'ve been in a car accident in Washington State, your PIP coverage likely pays for massage therapy. Here\'s how the process works and what you need to get started.',
+      date: 'April 28, 2026',
+      readTime: '5 min read',
+      category: 'Insurance',
+      content: [
+        { heading: 'What Is PIP?', body: 'Personal Injury Protection (PIP) is a mandatory component of auto insurance in Washington State. Every driver carries at least $10,000 in PIP coverage. This coverage pays for medical expenses — including massage therapy — regardless of who caused the accident.' },
+        { heading: 'Does PIP Cover Massage Therapy?', body: 'Yes. Washington State recognizes licensed massage therapists as qualified healthcare providers. If your injuries result from a motor vehicle accident, PIP covers your treatment. You do not need a referral from a physician to begin treatment with a licensed massage therapist in Washington.' },
+        { heading: 'How Billing Works', body: 'At PNW Clinical Bodywork, we bill your auto insurance directly. You don\'t pay anything out of pocket in most cases. After each session, we document your treatment with detailed SOAP notes and generate a CMS-1500 claim form that goes straight to your insurance company.' },
+        { heading: 'What You Need to Get Started', body: 'To begin PIP-covered treatment, we need three things: your auto insurance company name, your claim number (call your insurer if you don\'t have it yet), and the date of your accident. You can submit all of this through our secure online intake form.' },
+        { heading: 'Common Mistakes to Avoid', body: 'Don\'t wait too long to start treatment. Insurance adjusters look for gaps in care — if you wait weeks after your accident to begin treatment, it can weaken your claim. Start as soon as possible, even if your pain seems minor. Soft tissue injuries often worsen before they improve.' },
+        { heading: 'What If My Claim Is Denied?', body: 'Denials happen, but they\'re often reversible. We maintain thorough documentation of every session specifically to support appeals. If you have an attorney, we coordinate directly with their office to provide the records they need.' },
+      ]
+    },
+    {
+      id: 'first-visit',
+      title: 'What to Expect at Your First Clinical Massage Session',
+      excerpt: 'Your first visit is about understanding your pain, building a treatment plan, and starting the process of real recovery. Here\'s a step-by-step walkthrough.',
+      date: 'April 25, 2026',
+      readTime: '4 min read',
+      category: 'Patient Guide',
+      content: [
+        { heading: 'Before You Arrive', body: 'Wear comfortable clothing. If you\'re coming in for a PIP claim, have your insurance company name, claim number, and accident date ready. You can also complete our online intake form ahead of time to save time at the office.' },
+        { heading: 'The Consultation (10-15 Minutes)', body: 'Glen will start by asking about your pain history, where it hurts, when it started, and what makes it better or worse. He\'ll ask about your daily activities and what you want to get back to doing. This isn\'t small talk — it directly shapes your treatment plan.' },
+        { heading: 'Assessment', body: 'Glen will assess your range of motion, identify trigger points, and evaluate which muscle groups are contributing to your pain. He may use a body diagram to mark areas of concern so you can visually track your progress over sessions.' },
+        { heading: 'Treatment', body: 'This is clinical massage — not a spa experience. Glen uses targeted techniques like myofascial release and trigger point therapy to address the root cause of your pain. Communication is key: he\'ll check in throughout the session to adjust pressure and technique.' },
+        { heading: 'After the Session', body: 'You may feel immediate relief, or you may feel sore for 24-48 hours as your body adjusts. Glen will recommend home exercises or stretches to support your recovery between visits. Drink plenty of water.' },
+        { heading: 'Your Treatment Plan', body: 'Most conditions respond best to consistent treatment. Glen will recommend a frequency — typically once or twice per week initially — and adjust as you improve. For PIP patients, this documentation also supports your insurance claim.' },
+      ]
+    },
+    {
+      id: 'clinical-vs-spa',
+      title: 'Clinical Massage vs. Spa Massage: Why the Difference Matters',
+      excerpt: 'They both involve hands-on bodywork, but clinical massage and spa massage have fundamentally different goals. Understanding the difference could change how you approach your pain.',
+      date: 'April 20, 2026',
+      readTime: '4 min read',
+      category: 'Education',
+      content: [
+        { heading: 'The Goal Is Different', body: 'A spa massage is designed to help you relax. A clinical massage is designed to fix a problem. That\'s the core difference. Relaxation may be a side effect of clinical work, but it\'s not the purpose. The purpose is measurable improvement — less pain, more range of motion, better function.' },
+        { heading: 'Assessment Comes First', body: 'In a spa, you fill out a brief form and get on the table. In a clinical setting, your therapist evaluates your posture, range of motion, and pain patterns before they touch you. The treatment is based on findings, not preferences.' },
+        { heading: 'Technique Is Targeted', body: 'Spa massage typically uses long, flowing strokes across the whole body. Clinical massage zeroes in on specific muscles, tendons, and fascia that are causing your symptoms. Techniques like trigger point therapy and myofascial release are rarely used in a spa setting.' },
+        { heading: 'Documentation Matters', body: 'Clinical massage therapists maintain SOAP notes — Subjective, Objective, Assessment, Plan — just like any other healthcare provider. These notes track your progress, guide future treatment, and are essential for insurance billing.' },
+        { heading: 'Insurance Covers Clinical Work', body: 'Spa massages are out-of-pocket luxuries. Clinical massage, when performed by a licensed therapist for a documented condition, can be covered by health insurance or PIP auto insurance. This is because clinical work is healthcare, not self-care.' },
+        { heading: 'When to Choose Which', body: 'If you want to unwind after a stressful week, a spa massage is great. If you have chronic pain, limited mobility, an injury, or you\'re recovering from an accident — you need clinical massage. The two aren\'t interchangeable.' },
+      ]
+    },
+    {
+      id: 'injury-recovery-timeline',
+      title: 'How Long Does Injury Recovery Actually Take?',
+      excerpt: 'One of the most common questions we hear: "How many sessions will I need?" Here\'s an honest answer based on 20 years of clinical experience.',
+      date: 'April 15, 2026',
+      readTime: '5 min read',
+      category: 'Recovery',
+      content: [
+        { heading: 'The Honest Answer: It Depends', body: 'Every injury is different, and every body heals at its own pace. But after 20 years of clinical work, Glen has seen enough patterns to give you a realistic framework. The key factors are: how long you\'ve had the pain, how severe the initial injury was, and how consistent you are with treatment.' },
+        { heading: 'Acute Injuries (0-6 Weeks Old)', body: 'Recent injuries from car accidents, falls, or sports typically respond fastest. With consistent treatment (1-2 sessions per week), most patients see significant improvement within 4-8 sessions. The key is starting early — the sooner you begin, the faster you heal.' },
+        { heading: 'Subacute Injuries (6 Weeks - 3 Months)', body: 'At this stage, your body has started to compensate for the injury, creating secondary tension patterns. Treatment takes longer because we\'re addressing both the original injury and the compensation. Expect 8-16 sessions over 2-4 months.' },
+        { heading: 'Chronic Pain (3+ Months)', body: 'Chronic pain involves deeply established patterns in your muscles and nervous system. This is where patience matters most. Significant improvement typically takes 3-6 months of regular treatment, but most patients notice meaningful progress within the first month.' },
+        { heading: 'What "Better" Actually Looks Like', body: 'Recovery isn\'t always linear. You might have a great week followed by a tough one. What matters is the trend. Glen tracks your progress with body diagrams and pain scales so you can see objective improvement even when subjective feelings fluctuate.' },
+        { heading: 'The Role of Home Care', body: 'What you do between sessions matters as much as what happens during them. Glen prescribes specific stretches and exercises tailored to your condition. Patients who follow their home care plan consistently recover 30-40% faster than those who rely on in-office treatment alone.' },
+      ]
+    },
+  ];
+
   const closeBooking = () => { setShowBooking(false); setSelectedBookingUrl(null); };
 
   const BookingModal = () => (
@@ -749,6 +818,7 @@ export default function App() {
             <NavItem label="Services" id="services" />
             <NavItem label="About Glen" id="about" />
             <NavItem label="Insurance" id="insurance" />
+            <NavItem label="Blog" id="blog" />
             <a href={PORTAL_URL} target="_blank" rel="noopener noreferrer" className="text-sm font-bold tracking-tight text-slate-500 hover:text-teal-600 transition-colors flex items-center gap-1.5">
               <LogIn size={14} /> Practitioner Portal
             </a>
@@ -772,6 +842,7 @@ export default function App() {
             <NavItem label="Services" id="services" />
             <NavItem label="About Glen" id="about" />
             <NavItem label="Insurance" id="insurance" />
+            <NavItem label="Blog" id="blog" />
             <a href={PORTAL_URL} target="_blank" rel="noopener noreferrer" onClick={() => setIsMenuOpen(false)} className="text-sm font-bold tracking-tight text-slate-500 hover:text-teal-600 transition-colors flex items-center gap-2">
               <LogIn size={16} /> Practitioner Portal
             </a>
@@ -929,14 +1000,77 @@ export default function App() {
             </div>
           </section>
         )}
-        {activeTab === 'blog' && (
-          <div className="pt-40 pb-40 px-6 text-center">
-            <h3 className="text-2xl font-black mb-4">Content coming soon</h3>
-            <p className="text-slate-500 mb-8 font-medium">We are currently drafting our blog content.</p>
-            <button onClick={() => setActiveTab('home')} className="text-teal-600 font-black uppercase text-xs tracking-widest flex items-center justify-center gap-2 mx-auto">
-               Return Home <ArrowRight size={14} />
-            </button>
-          </div>
+        {activeTab === 'blog' && !selectedArticle && (
+          <section className="pt-32 pb-24 px-6 animate-in fade-in duration-500">
+            <div className="max-w-7xl mx-auto">
+              <div className="text-center mb-16">
+                <h2 className="text-sm font-black text-teal-600 uppercase tracking-widest mb-4">Clinical Insights</h2>
+                <h3 className="text-5xl font-black text-slate-900 tracking-tighter">Recovery Resources</h3>
+                <p className="mt-6 text-slate-500 max-w-2xl mx-auto font-medium">Expert guidance on injury recovery, insurance claims, and clinical massage therapy from Glen Arn, LMT.</p>
+              </div>
+              <div className="grid md:grid-cols-2 gap-8">
+                {BLOG_ARTICLES.map((article) => (
+                  <button
+                    key={article.id}
+                    onClick={() => { setSelectedArticle(article); window.scrollTo(0,0); }}
+                    className="text-left bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-sm hover:shadow-xl hover:border-teal-100 transition-all group"
+                  >
+                    <div className="flex items-center gap-3 mb-4">
+                      <span className="text-[10px] font-black uppercase tracking-widest text-teal-600 bg-teal-50 px-3 py-1 rounded-full">{article.category}</span>
+                      <span className="text-[10px] font-bold text-slate-400">{article.readTime}</span>
+                    </div>
+                    <h4 className="text-xl font-black text-slate-900 mb-3 group-hover:text-teal-700 transition-colors">{article.title}</h4>
+                    <p className="text-sm text-slate-500 font-medium leading-relaxed mb-4">{article.excerpt}</p>
+                    <div className="flex items-center justify-between">
+                      <span className="text-xs font-bold text-slate-400">{article.date}</span>
+                      <span className="flex items-center gap-1 text-xs font-black uppercase text-teal-700 opacity-0 group-hover:opacity-100 transition-opacity">
+                        Read <ChevronRight size={14} />
+                      </span>
+                    </div>
+                  </button>
+                ))}
+              </div>
+            </div>
+          </section>
+        )}
+        {activeTab === 'blog' && selectedArticle && (
+          <section className="pt-32 pb-24 px-6 animate-in fade-in duration-500">
+            <div className="max-w-3xl mx-auto">
+              <button onClick={() => setSelectedArticle(null)} className="flex items-center gap-2 text-xs font-black uppercase text-teal-700 hover:text-teal-900 tracking-widest mb-8">
+                <ChevronRight size={14} className="rotate-180" /> All Articles
+              </button>
+              <div className="flex items-center gap-3 mb-6">
+                <span className="text-[10px] font-black uppercase tracking-widest text-teal-600 bg-teal-50 px-3 py-1 rounded-full">{selectedArticle.category}</span>
+                <span className="text-[10px] font-bold text-slate-400">{selectedArticle.date}</span>
+                <span className="text-[10px] font-bold text-slate-400">{selectedArticle.readTime}</span>
+              </div>
+              <h1 className="text-4xl font-black text-slate-900 tracking-tighter mb-4">{selectedArticle.title}</h1>
+              <p className="text-lg text-slate-500 font-medium mb-10 leading-relaxed">{selectedArticle.excerpt}</p>
+              <div className="flex items-center gap-3 mb-12 pb-8 border-b border-slate-100">
+                <div className="w-10 h-10 rounded-full bg-teal-700 text-white flex items-center justify-center font-black text-sm">GA</div>
+                <div>
+                  <p className="text-sm font-black text-slate-900">Glen Arn, LMT</p>
+                  <p className="text-[10px] font-bold text-slate-400 uppercase">Licensed Massage Therapist #77218</p>
+                </div>
+              </div>
+              <div className="space-y-10">
+                {selectedArticle.content.map((section, i) => (
+                  <div key={i}>
+                    <h2 className="text-xl font-black text-slate-900 mb-3">{section.heading}</h2>
+                    <p className="text-slate-600 font-medium leading-relaxed">{section.body}</p>
+                  </div>
+                ))}
+              </div>
+              <div className="mt-16 p-8 bg-teal-50 rounded-[2rem] border border-teal-100 text-center">
+                <h3 className="text-xl font-black text-teal-900 mb-3">Ready to Start Your Recovery?</h3>
+                <p className="text-sm text-teal-700 font-medium mb-6">Book a session with Glen or start your PIP intake today.</p>
+                <div className="flex flex-col sm:flex-row gap-3 justify-center">
+                  <button onClick={() => setShowBooking(true)} className="px-8 py-3 bg-teal-700 text-white rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-teal-800 transition-all">Book a Session</button>
+                  <button onClick={() => { setSelectedArticle(null); setActiveTab('pip-intake'); window.scrollTo(0,0); }} className="px-8 py-3 bg-white border border-teal-200 text-teal-700 rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-teal-50 transition-all">PIP Intake Form</button>
+                </div>
+              </div>
+            </div>
+          </section>
         )}
       </main>
 
