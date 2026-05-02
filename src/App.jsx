@@ -44,14 +44,14 @@ export default function App() {
   const HomeView = () => (
     <>
       {/* Hero Section */}
-      <section className="pt-40 pb-20 px-6 relative overflow-hidden">
+      <section className="pt-28 sm:pt-32 lg:pt-40 pb-12 sm:pb-20 px-6 relative overflow-hidden">
         <div className="absolute top-0 right-0 w-1/3 h-full bg-emerald-50/50 -skew-x-12 translate-x-1/2 z-0 hidden lg:block"></div>
         <div className="max-w-7xl mx-auto grid lg:grid-cols-2 gap-12 items-center relative z-10">
           <div className="animate-in fade-in slide-in-from-left-4 duration-700">
             <div className="inline-flex items-center gap-2 px-3 py-1 bg-teal-50 text-teal-700 rounded-full text-[10px] font-black uppercase tracking-widest mb-6">
               <ShieldCheck size={14} /> Vancouver, WA Recovery Specialist
             </div>
-            <h1 className="text-5xl lg:text-7xl font-black text-slate-900 leading-[1.05] mb-6 tracking-tighter">
+            <h1 className="text-3xl sm:text-4xl lg:text-7xl font-black text-slate-900 leading-[1.05] mb-6 tracking-tighter">
               Stop managing the pain and <span className="text-teal-700">start fixing the cause.</span>
             </h1>
             <p className="text-lg text-slate-500 font-medium mb-10 max-w-lg leading-relaxed">
@@ -76,12 +76,12 @@ export default function App() {
             <div className="aspect-[4/5] bg-slate-100 rounded-[3rem] overflow-hidden shadow-2xl ring-8 ring-white relative group">
               <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1551632811-561732d1e306?q=80&w=2070&auto=format&fit=crop')] bg-cover bg-center"></div>
               <div className="absolute inset-0 bg-teal-900/20 mix-blend-multiply"></div>
-              <div className="absolute bottom-10 left-10 right-10 p-6 bg-white/90 backdrop-blur-md rounded-3xl border border-white/50 shadow-xl">
-                <p className="text-teal-900 font-black italic text-lg leading-tight">"After just a few sessions with Glen, I had less pain and increased range of motion. I highly recommend him."</p>
+              <div className="absolute bottom-4 left-4 right-4 p-4 sm:bottom-10 sm:left-10 sm:right-10 sm:p-6 bg-white/90 backdrop-blur-md rounded-3xl border border-white/50 shadow-xl">
+                <p className="text-teal-900 font-black italic text-sm sm:text-lg leading-tight">"After just a few sessions with Glen, I had less pain and increased range of motion. I highly recommend him."</p>
                 <p className="mt-3 text-xs font-black uppercase text-teal-600 tracking-widest">— Carrie F.</p>
               </div>
             </div>
-            <div className="absolute -bottom-6 -right-6 w-32 h-32 bg-emerald-100 rounded-3xl -z-10 animate-pulse"></div>
+            <div className="absolute -bottom-6 -right-6 w-32 h-32 bg-emerald-100 rounded-3xl -z-10 animate-pulse hidden sm:block"></div>
           </div>
         </div>
       </section>
@@ -94,7 +94,7 @@ export default function App() {
               <div className="inline-flex items-center gap-2 text-teal-600 font-black uppercase text-[10px] tracking-[0.3em]">
                 <Star size={14} /> Patient Spotlight
               </div>
-              <h3 className="text-4xl font-black text-slate-900 leading-tight">
+              <h3 className="text-2xl sm:text-4xl font-black text-slate-900 leading-tight">
                 From "Constant Discomfort" to the <span className="text-teal-700">Dance Floor.</span>
               </h3>
               <div className="space-y-4 text-slate-600 font-medium leading-relaxed">
@@ -126,7 +126,7 @@ export default function App() {
                     <p className="text-2xl font-black">Diane's Comeback</p>
                   </div>
                </div>
-               <div className="absolute -top-10 -right-10 w-40 h-40 bg-emerald-50 rounded-full -z-10"></div>
+               <div className="absolute -top-10 -right-10 w-40 h-40 bg-emerald-50 rounded-full -z-10 hidden lg:block"></div>
             </div>
           </div>
         </div>
@@ -136,14 +136,14 @@ export default function App() {
       <section className="py-24 bg-slate-50">
         <div className="max-w-7xl mx-auto px-6 text-center">
           <h2 className="text-[10px] font-black uppercase tracking-[0.4em] text-teal-600 mb-4">The Challenge</h2>
-          <h3 className="text-4xl font-black text-slate-900 mb-16 tracking-tight">Does chronic pain dictate your daily schedule?</h3>
+          <h3 className="text-2xl sm:text-4xl font-black text-slate-900 mb-16 tracking-tight">Does chronic pain dictate your daily schedule?</h3>
           <div className="grid md:grid-cols-3 gap-8">
             {[
               { title: "Temporary Relief Isn't Enough", desc: "Spa massages feel good for an hour, but they don't fix the underlying structural issues.", icon: Heart },
               { title: "Limited Range of Motion", desc: "Feeling stuck in your own body prevents you from living your second half of life with vitality.", icon: Activity },
               { title: "Injury Breakdown", desc: "Just as you wouldn't drive a car with failing brakes, you shouldn't ignore your body's pain signals.", icon: Stethoscope }
             ].map((item, i) => (
-              <div key={i} className="bg-white p-10 rounded-[2.5rem] border border-slate-100 shadow-sm hover:shadow-xl transition-all group">
+              <div key={i} className="bg-white p-6 sm:p-10 rounded-2xl sm:rounded-[2.5rem] border border-slate-100 shadow-sm hover:shadow-xl transition-all group">
                 <div className="w-16 h-16 bg-teal-50 rounded-2xl flex items-center justify-center mb-6 group-hover:bg-teal-700 transition-colors">
                   <item.icon className="text-teal-600 group-hover:text-white" size={32} />
                 </div>
@@ -162,7 +162,7 @@ export default function App() {
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-20">
           <h2 className="text-sm font-black text-teal-600 uppercase tracking-widest mb-4">Our Expertise</h2>
-          <h3 className="text-5xl font-black text-slate-900 tracking-tighter">Specialized Clinical Care</h3>
+          <h3 className="text-3xl sm:text-5xl font-black text-slate-900 tracking-tighter">Specialized Clinical Care</h3>
           <p className="mt-6 text-slate-500 max-w-2xl mx-auto font-medium">We don't do "general" massage. We focus on clinical techniques that produce measurable results in pain reduction and mobility.</p>
         </div>
         <div className="grid md:grid-cols-2 gap-8">
@@ -172,7 +172,7 @@ export default function App() {
             { name: "Deep Tissue Massage", time: "60/90 Min", price: "$100+", desc: "Firm strokes on deeper layers of muscle to relieve stubborn chronic tension.", icon: Heart },
             { name: "Trigger Point Therapy", time: "60 Min", price: "$100", desc: "Focused pressure on 'knots' that cause referred pain in other parts of the body.", icon: Users }
           ].map((s, i) => (
-            <div key={i} className="p-10 bg-slate-50 rounded-[3rem] border border-slate-100 flex flex-col items-start hover:bg-white hover:shadow-2xl hover:border-teal-100 transition-all group">
+            <div key={i} className="p-6 sm:p-10 bg-slate-50 rounded-2xl sm:rounded-[3rem] border border-slate-100 flex flex-col items-start hover:bg-white hover:shadow-2xl hover:border-teal-100 transition-all group">
                <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center mb-6 shadow-sm group-hover:bg-teal-700 group-hover:text-white transition-colors">
                  <s.icon size={24} />
                </div>
@@ -197,20 +197,20 @@ export default function App() {
   const AboutView = () => (
     <section className="pt-32 pb-24 px-6 animate-in fade-in duration-500">
       <div className="max-w-7xl mx-auto">
-        <div className="grid lg:grid-cols-2 gap-20 items-center">
+        <div className="grid lg:grid-cols-2 gap-10 lg:gap-20 items-center">
           <div className="relative">
             <div className="aspect-[4/5] bg-slate-100 rounded-[4rem] overflow-hidden shadow-2xl relative">
                <div className="absolute inset-0 bg-[url('/images/glen-arn.jpg')] bg-cover bg-center bg-top"></div>
                <div className="absolute inset-0 bg-teal-900/10"></div>
             </div>
-            <div className="absolute -bottom-6 -left-6 bg-white p-8 rounded-3xl shadow-xl border border-slate-50">
+            <div className="absolute -bottom-4 left-4 sm:-bottom-6 sm:-left-6 bg-white p-8 rounded-3xl shadow-xl border border-slate-50">
               <p className="text-3xl font-black text-teal-700 leading-none">20+</p>
               <p className="text-[10px] font-black uppercase text-slate-400 tracking-widest mt-1">Years Clinical Exp.</p>
             </div>
           </div>
           <div>
             <h2 className="text-sm font-black text-teal-600 uppercase tracking-widest mb-4">Meet Glen Arn, LMT</h2>
-            <h3 className="text-5xl font-black text-slate-900 leading-tight mb-8 tracking-tighter">Helping you get back to the things you love.</h3>
+            <h3 className="text-3xl sm:text-5xl font-black text-slate-900 leading-tight mb-8 tracking-tighter">Helping you get back to the things you love.</h3>
             <div className="space-y-6 text-slate-600 font-medium leading-relaxed text-lg">
               <p>Glen grew up in the Pacific Northwest and has lived the active lifestyle he helps his clients maintain. Having sustained roughly 15 broken bones himself, Glen understands pain from the inside out.</p>
               <p>With a 20-year career focusing on clinical manual therapy, Glen has helped countless people in Vancouver avoid surgeries and return to hiking, dancing, and playing with grandkids.</p>
@@ -495,7 +495,7 @@ export default function App() {
             <div className="inline-flex items-center gap-2 px-3 py-1 bg-emerald-50 text-emerald-700 rounded-full text-[10px] font-black uppercase tracking-widest mb-6">
               <ShieldCheck size={14} /> HIPAA-Compliant Secure Form
             </div>
-            <h2 className="text-4xl font-black text-slate-900 tracking-tighter mb-4">PIP / Auto Accident Intake</h2>
+            <h2 className="text-2xl sm:text-4xl font-black text-slate-900 tracking-tighter mb-4">PIP / Auto Accident Intake</h2>
             <p className="text-slate-500 font-medium max-w-xl mx-auto">
               Complete this form to start your PIP claim. All information is encrypted and handled in accordance with HIPAA regulations.
             </p>
@@ -649,7 +649,7 @@ export default function App() {
             <button
               type="submit"
               disabled={intakeSubmitting}
-              className="w-full py-6 bg-teal-700 text-white rounded-[2rem] font-black text-xl shadow-2xl shadow-teal-700/30 hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full py-6 bg-teal-700 text-white rounded-[2rem] font-black text-base sm:text-xl shadow-2xl shadow-teal-700/30 hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {intakeSubmitting ? 'Submitting...' : 'Submit Secure Intake Form'}
             </button>
@@ -830,7 +830,7 @@ export default function App() {
             </button>
           </div>
 
-          <button className="md:hidden text-slate-800" onClick={() => setIsMenuOpen(!isMenuOpen)}>
+          <button className="md:hidden text-slate-800 p-2" onClick={() => setIsMenuOpen(!isMenuOpen)}>
             {isMenuOpen ? <X /> : <Menu />}
           </button>
         </div>
@@ -870,7 +870,7 @@ export default function App() {
             <div className="max-w-7xl mx-auto">
               <div className="text-center mb-20">
                 <h2 className="text-sm font-black text-teal-600 uppercase tracking-widest mb-4">Insurance & Billing</h2>
-                <h3 className="text-5xl font-black text-slate-900 tracking-tighter">We Handle the Paperwork</h3>
+                <h3 className="text-3xl sm:text-5xl font-black text-slate-900 tracking-tighter">We Handle the Paperwork</h3>
                 <p className="mt-6 text-slate-500 max-w-2xl mx-auto font-medium">Whether you're paying out-of-pocket or filing through insurance, we make the process simple so you can focus on recovery.</p>
               </div>
 
@@ -1005,7 +1005,7 @@ export default function App() {
             <div className="max-w-7xl mx-auto">
               <div className="text-center mb-16">
                 <h2 className="text-sm font-black text-teal-600 uppercase tracking-widest mb-4">Clinical Insights</h2>
-                <h3 className="text-5xl font-black text-slate-900 tracking-tighter">Recovery Resources</h3>
+                <h3 className="text-3xl sm:text-5xl font-black text-slate-900 tracking-tighter">Recovery Resources</h3>
                 <p className="mt-6 text-slate-500 max-w-2xl mx-auto font-medium">Expert guidance on injury recovery, insurance claims, and clinical massage therapy from Glen Arn, LMT.</p>
               </div>
               <div className="grid md:grid-cols-2 gap-8">
@@ -1076,8 +1076,8 @@ export default function App() {
 
       {/* Shared Sections: CTA & Footer */}
       <section className="py-24 max-w-7xl mx-auto px-6 grid lg:grid-cols-2 gap-12">
-        <div className="bg-emerald-50 p-12 rounded-[3rem] border border-emerald-100 flex flex-col justify-center">
-          <h3 className="text-3xl font-black text-emerald-900 mb-6 tracking-tight">Have a PIP or Auto Accident Claim?</h3>
+        <div className="bg-emerald-50 p-6 sm:p-8 lg:p-12 rounded-2xl sm:rounded-[3rem] border border-emerald-100 flex flex-col justify-center">
+          <h3 className="text-2xl sm:text-3xl font-black text-emerald-900 mb-6 tracking-tight">Have a PIP or Auto Accident Claim?</h3>
           <p className="text-emerald-800 font-medium mb-8 leading-relaxed">
             We specialize in Motor Vehicle Accident (MVA) recovery. We bill the insurance companies directly so you can focus on healing, not paperwork.
           </p>
@@ -1085,8 +1085,8 @@ export default function App() {
             Start Insurance Inquiry <ArrowRight size={16} />
           </button>
         </div>
-        <div className="bg-teal-50 p-12 rounded-[3rem] border border-teal-100 flex flex-col justify-center">
-          <h3 className="text-3xl font-black text-teal-900 mb-6 tracking-tight">Referral Program</h3>
+        <div className="bg-teal-50 p-6 sm:p-8 lg:p-12 rounded-2xl sm:rounded-[3rem] border border-teal-100 flex flex-col justify-center">
+          <h3 className="text-2xl sm:text-3xl font-black text-teal-900 mb-6 tracking-tight">Referral Program</h3>
           <p className="text-teal-800 font-medium mb-8 leading-relaxed">
             When you refer a friend, you both receive $25 off your next session. It's our way of saying thank you for trusting us with your recovery.
           </p>
@@ -1098,12 +1098,12 @@ export default function App() {
       </section>
 
       {/* Footer */}
-      <footer className="bg-slate-900 pt-24 pb-12 px-6 text-white rounded-t-[4rem]">
+      <footer className="bg-slate-900 pt-12 sm:pt-24 pb-8 sm:pb-12 px-6 text-white rounded-t-3xl sm:rounded-t-[4rem]">
         <div className="max-w-7xl mx-auto grid md:grid-cols-4 gap-12 mb-20">
           <div className="md:col-span-2">
             <div className="flex items-center gap-2 mb-6" onClick={() => setActiveTab('home')}>
               <Activity className="text-teal-400" size={28} />
-              <h1 className="text-xl font-black tracking-tighter">PNW CLINICAL BODYWORK</h1>
+              <span className="text-xl font-black tracking-tighter">PNW CLINICAL BODYWORK</span>
             </div>
             <p className="text-slate-400 font-medium max-w-sm mb-8 leading-relaxed">
               Helping you get back to the things you love through targeted, clinical manual therapy in Vancouver, WA.
@@ -1118,7 +1118,7 @@ export default function App() {
               </li>
               <li className="flex items-center gap-2">
                 <Phone size={16} className="text-teal-400" />
-                (360) 521-0804
+                <a href="tel:+13605210804">(360) 521-0804</a>
               </li>
             </ul>
           </div>
@@ -1133,7 +1133,7 @@ export default function App() {
         </div>
         <div className="max-w-7xl mx-auto border-t border-slate-800 pt-12 flex flex-col md:flex-row justify-between gap-6 text-slate-500 text-[10px] font-black uppercase tracking-widest">
           <p>&copy; 2026 PNW Clinical Bodywork. All Rights Reserved.</p>
-          <div className="flex gap-8">
+          <div className="flex flex-wrap gap-4 sm:gap-8">
             <button onClick={() => { setActiveTab('privacy'); window.scrollTo(0,0); }} className="hover:text-white transition-colors">Privacy Policy</button>
             <button onClick={() => { setActiveTab('terms'); window.scrollTo(0,0); }} className="hover:text-white transition-colors">Terms of Service</button>
             <button onClick={() => { setActiveTab('hipaa'); window.scrollTo(0,0); }} className="hover:text-white transition-colors">HIPAA Compliance</button>
