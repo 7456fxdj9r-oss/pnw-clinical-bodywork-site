@@ -7,5 +7,5 @@ import react from '@vitejs/plugin-react';
 // No config change needed when you add the custom domain later.
 export default defineConfig({
   plugins: [react()],
-  base: './',
+  base: '/',
 });
