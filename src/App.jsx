@@ -179,9 +179,31 @@ function NavItem({ label, to, closeMenu }) {
   );
 }
 
+// ── Video Modal ──────────────────────────────────────────────────────────
+function VideoModal({ onClose }) {
+  useEffect(() => {
+    const handleEsc = (e) => { if (e.key === 'Escape') onClose(); };
+    document.body.style.overflow = 'hidden';
+    document.addEventListener('keydown', handleEsc);
+    return () => { document.body.style.overflow = ''; document.removeEventListener('keydown', handleEsc); };
+  }, [onClose]);
+
+  return (
+    <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/80 backdrop-blur-sm animate-in fade-in duration-300" onClick={onClose}>
+      <div className="w-full max-w-4xl rounded-2xl overflow-hidden shadow-2xl animate-in zoom-in-95 duration-500" onClick={(e) => e.stopPropagation()}>
+        <div className="flex justify-end p-2 bg-black">
+          <button onClick={onClose} className="text-white/60 hover:text-white p-1"><X size={24} /></button>
+        </div>
+        <video src="/videos/diane-testimonial.mp4" controls autoPlay className="w-full aspect-video bg-black" />
+      </div>
+    </div>
+  );
+}
+
 // ── Layout ───────────────────────────────────────────────────────────────
 function Layout() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [showVideo, setShowVideo] = useState(false);
   const { openBooking } = useBooking();
   const location = useLocation();
 
@@ -193,6 +215,7 @@ function Layout() {
   return (
     <div className="min-h-screen bg-white font-sans text-slate-900 selection:bg-teal-100 selection:text-teal-900">
       <BookingModal />
+      {showVideo && <VideoModal onClose={() => setShowVideo(false)} />}
 
       <nav className="fixed w-full z-50 bg-white/90 backdrop-blur-md border-b border-slate-100">
         <div className="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
@@ -242,7 +265,7 @@ function Layout() {
 
       <main>
         <Routes>
-          <Route index element={<HomeView />} />
+          <Route index element={<HomeView onWatchStory={() => setShowVideo(true)} />} />
           <Route path="services" element={<ServicesView />} />
           <Route path="about" element={<AboutView />} />
           <Route path="insurance" element={<InsuranceView />} />
@@ -327,7 +350,7 @@ function Layout() {
 
 // ── Views ────────────────────────────────────────────────────────────────
 
-function HomeView() {
+function HomeView({ onWatchStory }) {
   const { openBooking } = useBooking();
   return (
     <>
@@ -348,7 +371,7 @@ function HomeView() {
               <button onClick={openBooking} className="px-10 py-5 bg-teal-700 text-white rounded-2xl font-black text-sm uppercase tracking-widest shadow-2xl shadow-teal-700/30 hover:scale-105 transition-all">
                 Book Recovery Session
               </button>
-              <button className="px-10 py-5 bg-white border border-slate-200 text-slate-600 rounded-2xl font-black text-sm uppercase tracking-widest flex items-center justify-center gap-3 hover:bg-slate-50 transition-all">
+              <button onClick={onWatchStory} className="px-10 py-5 bg-white border border-slate-200 text-slate-600 rounded-2xl font-black text-sm uppercase tracking-widest flex items-center justify-center gap-3 hover:bg-slate-50 transition-all">
                 <PlayCircle size={20} className="text-teal-600" /> Watch Story
               </button>
             </div>
