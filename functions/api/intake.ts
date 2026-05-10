@@ -4,6 +4,9 @@
 interface Env {
   GHL_PIT: string;
   GHL_LOCATION_ID: string;
+  DISCORD_WEBHOOK_URL?: string;
+  NOTIFICATION_EMAIL?: string;
+  NOTIFICATION_FROM_EMAIL?: string;
 }
 
 interface IntakePayload {
@@ -268,6 +271,60 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
     }
 
     const result = await ghlResponse.json() as { contact?: { id?: string } };
+
+    // Send notifications (Discord + email) — fire and forget
+    const patientName = `${body.firstName} ${body.lastName}`;
+    const intakeType = body.hasInsuranceClaim ? 'Insurance / PIP Claim' : 'New Client';
+    const notifyPayload = JSON.stringify({
+      name: patientName,
+      email: body.email || '',
+      type: intakeType,
+    });
+
+    const notifications: Promise<unknown>[] = [];
+
+    if (env.DISCORD_WEBHOOK_URL) {
+      notifications.push(
+        fetch(env.DISCORD_WEBHOOK_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            username: 'PNW Clinical Bodywork',
+            embeds: [{
+              title: 'New Patient Intake Submission',
+              color: 0x0F766E,
+              fields: [
+                { name: 'Patient', value: patientName, inline: true },
+                { name: 'Type', value: intakeType, inline: true },
+                ...(body.email ? [{ name: 'Email', value: body.email, inline: true }] : []),
+              ],
+              footer: { text: 'pnwclinicalbodywork.com' },
+              timestamp: new Date().toISOString(),
+            }],
+          }),
+        }).catch(() => {})
+      );
+    }
+
+    if (env.NOTIFICATION_EMAIL) {
+      notifications.push(
+        fetch('https://api.mailchannels.net/tx/v1/send', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            personalizations: [{ to: [{ email: env.NOTIFICATION_EMAIL }] }],
+            from: {
+              email: env.NOTIFICATION_FROM_EMAIL || 'intake@pnwclinicalbodywork.com',
+              name: 'PNW Clinical Bodywork',
+            },
+            subject: `New Intake: ${patientName}`,
+            content: [{ type: 'text/plain', value: `New ${intakeType} intake:\n\nPatient: ${patientName}${body.email ? `\nEmail: ${body.email}` : ''}${body.phone ? `\nPhone: ${body.phone}` : ''}\n\nReview at: https://portal.pnwclinicalbodywork.com` }],
+          }),
+        }).catch(() => {})
+      );
+    }
+
+    if (notifications.length > 0) await Promise.all(notifications);
 
     return new Response(
       JSON.stringify({ success: true }),
