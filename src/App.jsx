@@ -4,7 +4,8 @@ import {
   Menu, X, ChevronRight, PlayCircle, ShieldCheck,
   CheckCircle2, MapPin, Phone, ArrowRight,
   Stethoscope, Activity, Heart, Users,
-  Star, LogIn, CreditCard, User, AlertCircle
+  Star, LogIn, CreditCard, User, AlertCircle,
+  Calendar, Camera, ChevronDown, ChevronUp, FileText
 } from 'lucide-react';
 
 const PORTAL_URL = 'https://portal.pnwclinicalbodywork.com';
@@ -212,7 +213,7 @@ function BookingModal() {
             </div>
             <div className="text-center space-y-2">
               <p className="text-[10px] font-bold text-slate-400">MVA/PIP patients — start your intake here:</p>
-              <button onClick={() => { closeBooking(); navigate('/pip-intake'); }} className="inline-flex items-center gap-2 text-xs font-black uppercase text-teal-700 hover:text-teal-900">
+              <button onClick={() => { closeBooking(); navigate('/intake?insurance=true'); }} className="inline-flex items-center gap-2 text-xs font-black uppercase text-teal-700 hover:text-teal-900">
                 <ArrowRight size={14} /> PIP Intake Form
               </button>
             </div>
@@ -332,7 +333,9 @@ function Layout() {
           <Route path="insurance" element={<InsuranceView />} />
           <Route path="blog" element={<BlogListView />} />
           <Route path="blog/:slug" element={<BlogArticleView />} />
-          <Route path="pip-intake" element={<IntakeView />} />
+          <Route path="intake" element={<UnifiedIntakeView />} />
+          <Route path="pip-intake" element={<Navigate to="/intake?insurance=true" replace />} />
+          <Route path="booking-confirmed" element={<BookingConfirmedView />} />
           <Route path="privacy" element={<PrivacyView />} />
           <Route path="terms" element={<TermsView />} />
           <Route path="hipaa" element={<HipaaView />} />
@@ -347,7 +350,7 @@ function Layout() {
           <p className="text-emerald-800 font-medium mb-8 leading-relaxed">
             We specialize in Motor Vehicle Accident (MVA) recovery. We bill the insurance companies directly so you can focus on healing, not paperwork.
           </p>
-          <Link to="/pip-intake" className="self-start flex items-center gap-3 px-8 py-4 bg-emerald-600 text-white rounded-2xl font-black text-xs uppercase tracking-widest shadow-xl shadow-emerald-600/20 hover:scale-105 transition-all">
+          <Link to="/intake?insurance=true" className="self-start flex items-center gap-3 px-8 py-4 bg-emerald-600 text-white rounded-2xl font-black text-xs uppercase tracking-widest shadow-xl shadow-emerald-600/20 hover:scale-105 transition-all">
             Start Insurance Inquiry <ArrowRight size={16} />
           </Link>
         </div>
@@ -644,142 +647,7 @@ function HipaaView() {
   );
 }
 
-function IntakeView() {
-  const [submitting, setSubmitting] = useState(false);
-  const [success, setSuccess] = useState(false);
-  const [error, setError] = useState(null);
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-    setSubmitting(true);
-    setError(null);
-    const form = e.currentTarget;
-    const data = Object.fromEntries(new FormData(form));
-    const painAreas = Array.from(form.querySelectorAll('input[name="painArea"]:checked')).map(cb => cb.value);
-    try {
-      const res = await fetch('/api/intake', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          firstName: data.firstName, lastName: data.lastName,
-          email: data.email || undefined, phone: data.phone,
-          dateOfBirth: data.dateOfBirth || undefined, address: data.address || undefined,
-          accidentDate: data.accidentDate || undefined, insuranceCompany: data.insuranceCompany || undefined,
-          claimNumber: data.claimNumber || undefined, policyNumber: data.policyNumber || undefined,
-          adjusterName: data.adjusterName || undefined, adjusterPhone: data.adjusterPhone || undefined,
-          attorneyName: data.attorneyName || undefined, attorneyPhone: data.attorneyPhone || undefined,
-          lawFirm: data.lawFirm || undefined, injuryDescription: data.injuryDescription || undefined,
-          painAreas: painAreas.length > 0 ? painAreas : undefined,
-          physicianName: data.physicianName || undefined, currentMedications: data.currentMedications || undefined,
-          preExistingConditions: data.preExistingConditions || undefined,
-          consentToTreat: !!data.consentToTreat, hipaaAcknowledged: !!data.hipaaAcknowledged,
-        }),
-      });
-      if (!res.ok) { const err = await res.json(); throw new Error(err.error || 'Submission failed'); }
-      setSuccess(true);
-      form.reset();
-    } catch (err) { setError(err.message); } finally { setSubmitting(false); }
-  };
-
-  if (success) {
-    return (
-      <section className="pt-32 pb-24 px-6 animate-in fade-in duration-500">
-        <div className="max-w-2xl mx-auto text-center">
-          <div className="w-20 h-20 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-6"><CheckCircle2 className="text-emerald-600" size={40} /></div>
-          <h2 className="text-4xl font-black text-slate-900 mb-4">Intake Received</h2>
-          <p className="text-lg text-slate-500 font-medium mb-8">Thank you. Glen will review your information and contact you within one business day to schedule your first appointment.</p>
-          <p className="text-sm text-slate-400 font-bold mb-10">If you need immediate assistance, call <strong>(360) 521-0804</strong>.</p>
-          <Link to="/" className="px-10 py-4 bg-teal-700 text-white rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-teal-800 transition-all inline-block">Return Home</Link>
-        </div>
-      </section>
-    );
-  }
-
-  const inputClass = "w-full p-4 bg-slate-50 border border-slate-200 rounded-2xl font-bold text-slate-900 focus:outline-none focus:ring-2 focus:ring-teal-500 focus:border-transparent";
-  const labelClass = "text-[10px] font-black uppercase text-slate-400 tracking-widest mb-1 block";
-  const sectionTitle = (icon, title) => <h3 className="text-lg font-black text-slate-900 mb-6 flex items-center gap-2">{icon} {title}</h3>;
-
-  return (
-    <section className="pt-32 pb-24 px-6 animate-in fade-in duration-500">
-      <div className="max-w-3xl mx-auto">
-        <div className="text-center mb-12">
-          <div className="inline-flex items-center gap-2 px-3 py-1 bg-emerald-50 text-emerald-700 rounded-full text-[10px] font-black uppercase tracking-widest mb-6"><ShieldCheck size={14} /> HIPAA-Compliant Secure Form</div>
-          <h2 className="text-2xl sm:text-4xl font-black text-slate-900 tracking-tighter mb-4">PIP / Auto Accident Intake</h2>
-          <p className="text-slate-500 font-medium max-w-xl mx-auto">Complete this form to start your PIP claim. All information is encrypted and handled in accordance with HIPAA regulations.</p>
-        </div>
-        <form onSubmit={handleSubmit} className="space-y-8">
-          <div className="bg-white p-6 sm:p-10 rounded-[2.5rem] border border-slate-100 shadow-sm">
-            {sectionTitle(<User className="text-teal-600" size={22} />, 'Patient Information')}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
-              <div><label className={labelClass}>First Name *</label><input name="firstName" type="text" required className={inputClass} /></div>
-              <div><label className={labelClass}>Last Name *</label><input name="lastName" type="text" required className={inputClass} /></div>
-              <div><label className={labelClass}>Phone Number *</label><input name="phone" type="tel" required className={inputClass} placeholder="(360) 555-0000" /></div>
-              <div><label className={labelClass}>Email Address</label><input name="email" type="email" className={inputClass} /></div>
-              <div><label className={labelClass}>Date of Birth</label><input name="dateOfBirth" type="date" className={inputClass} /></div>
-              <div><label className={labelClass}>Mailing Address</label><input name="address" type="text" className={inputClass} placeholder="Street, City, State ZIP" /></div>
-            </div>
-          </div>
-          <div className="bg-emerald-50/50 p-6 sm:p-10 rounded-[2.5rem] border border-emerald-100">
-            {sectionTitle(<AlertCircle className="text-emerald-700" size={22} />, 'Accident & Insurance Details')}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
-              <div><label className={labelClass}>Date of Accident *</label><input name="accidentDate" type="date" required className={inputClass} /></div>
-              <div><label className={labelClass}>Auto Insurance Company *</label><input name="insuranceCompany" type="text" required className={inputClass} placeholder="e.g. State Farm, GEICO" /></div>
-              <div><label className={labelClass}>Claim Number</label><input name="claimNumber" type="text" className={inputClass} /></div>
-              <div><label className={labelClass}>Policy Number</label><input name="policyNumber" type="text" className={inputClass} /></div>
-              <div><label className={labelClass}>Adjuster Name</label><input name="adjusterName" type="text" className={inputClass} /></div>
-              <div><label className={labelClass}>Adjuster Phone</label><input name="adjusterPhone" type="tel" className={inputClass} /></div>
-            </div>
-            <div className="mt-6"><label className={labelClass}>Describe the Accident & Your Injuries</label><textarea name="injuryDescription" rows={3} className={inputClass + ' resize-none'} placeholder="e.g. Rear-ended at a stoplight, experiencing neck and lower back pain..." /></div>
-          </div>
-          <div className="bg-white p-6 sm:p-10 rounded-[2.5rem] border border-slate-100 shadow-sm">
-            {sectionTitle(<Activity className="text-teal-600" size={22} />, 'Areas of Pain')}
-            <p className="text-sm text-slate-500 font-medium mb-4">Select all areas where you are experiencing pain or discomfort:</p>
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3">
-              {['Neck / Cervical', 'Upper Back / Thoracic', 'Lower Back / Lumbar', 'Left Shoulder', 'Right Shoulder', 'Left Arm / Hand', 'Right Arm / Hand', 'Left Hip', 'Right Hip', 'Left Leg / Knee', 'Right Leg / Knee', 'Headaches'].map((area) => (
-                <label key={area} className="flex items-center gap-2 p-3 bg-slate-50 rounded-xl border border-slate-100 cursor-pointer hover:bg-teal-50 hover:border-teal-200 transition-all text-sm font-bold text-slate-700">
-                  <input type="checkbox" name="painArea" value={area} className="w-4 h-4 rounded border-slate-300 text-teal-600 focus:ring-teal-500" />{area}
-                </label>
-              ))}
-            </div>
-          </div>
-          <div className="bg-white p-6 sm:p-10 rounded-[2.5rem] border border-slate-100 shadow-sm">
-            {sectionTitle(<ShieldCheck className="text-slate-500" size={22} />, 'Attorney Information (if applicable)')}
-            <p className="text-sm text-slate-500 font-medium mb-4">If you have retained an attorney for your accident claim, provide their details below.</p>
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
-              <div><label className={labelClass}>Attorney Name</label><input name="attorneyName" type="text" className={inputClass} /></div>
-              <div><label className={labelClass}>Law Firm</label><input name="lawFirm" type="text" className={inputClass} /></div>
-              <div><label className={labelClass}>Attorney Phone</label><input name="attorneyPhone" type="tel" className={inputClass} /></div>
-            </div>
-          </div>
-          <div className="bg-white p-6 sm:p-10 rounded-[2.5rem] border border-slate-100 shadow-sm">
-            {sectionTitle(<Heart className="text-teal-600" size={22} />, 'Medical History')}
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
-              <div><label className={labelClass}>Primary Care Physician</label><input name="physicianName" type="text" className={inputClass} /></div>
-              <div><label className={labelClass}>Current Medications</label><input name="currentMedications" type="text" className={inputClass} placeholder="List any current medications" /></div>
-            </div>
-            <div className="mt-4"><label className={labelClass}>Pre-existing Conditions</label><textarea name="preExistingConditions" rows={2} className={inputClass + ' resize-none'} placeholder="List any conditions relevant to your injury (e.g. prior back surgery, arthritis)" /></div>
-          </div>
-          <div className="bg-slate-50 p-6 sm:p-10 rounded-[2.5rem] border border-slate-200">
-            {sectionTitle(<ShieldCheck className="text-teal-700" size={22} />, 'Consent & Acknowledgment')}
-            <div className="space-y-4">
-              <label className="flex items-start gap-3 cursor-pointer"><input type="checkbox" name="consentToTreat" value="yes" required className="w-5 h-5 rounded border-slate-300 text-teal-600 focus:ring-teal-500 mt-0.5" /><span className="text-sm font-medium text-slate-700"><strong>Consent to Treat:</strong> I authorize PNW Clinical Bodywork and Glen Arn, LMT to provide massage therapy treatment for my injuries. I understand the nature of the services offered and that results may vary. *</span></label>
-              <label className="flex items-start gap-3 cursor-pointer"><input type="checkbox" name="hipaaAcknowledged" value="yes" required className="w-5 h-5 rounded border-slate-300 text-teal-600 focus:ring-teal-500 mt-0.5" /><span className="text-sm font-medium text-slate-700"><strong>HIPAA Acknowledgment:</strong> I acknowledge that my health information will be collected, used, and protected in accordance with HIPAA regulations and PNW Clinical Bodywork's <Link to="/privacy" className="text-teal-600 underline">Privacy Policy</Link>. *</span></label>
-            </div>
-          </div>
-          {error && <div className="p-4 bg-red-50 border border-red-200 rounded-2xl text-red-700 font-bold text-sm text-center">{error}</div>}
-          <button type="submit" disabled={submitting} className="w-full py-6 bg-teal-700 text-white rounded-[2rem] font-black text-base sm:text-xl shadow-2xl shadow-teal-700/30 hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-50 disabled:cursor-not-allowed">
-            {submitting ? 'Submitting...' : 'Submit Secure Intake Form'}
-          </button>
-          <p className="text-center text-xs text-slate-400 font-medium">
-            Your information is encrypted and transmitted securely. By submitting this form, you agree to our{' '}
-            <Link to="/terms" className="text-teal-600 underline">Terms of Service</Link>{' '}and{' '}
-            <Link to="/hipaa" className="text-teal-600 underline">HIPAA Compliance</Link>{' '}policies.
-          </p>
-        </form>
-      </div>
-    </section>
-  );
-}
+// Old IntakeView removed — replaced by UnifiedIntakeView
 
 function InsuranceView() {
   const { openBooking } = useBooking();
@@ -802,7 +670,7 @@ function InsuranceView() {
                   <li key={i} className="flex items-start gap-3 text-emerald-800 font-medium"><CheckCircle2 size={16} className="text-emerald-600 mt-1 flex-shrink-0" />{item}</li>
                 ))}
               </ul>
-              <Link to="/pip-intake" className="inline-flex items-center gap-3 px-8 py-4 bg-emerald-600 text-white rounded-2xl font-black text-xs uppercase tracking-widest shadow-xl shadow-emerald-600/20 hover:scale-105 transition-all">Start Your PIP Claim <ArrowRight size={16} /></Link>
+              <Link to="/intake?insurance=true" className="inline-flex items-center gap-3 px-8 py-4 bg-emerald-600 text-white rounded-2xl font-black text-xs uppercase tracking-widest shadow-xl shadow-emerald-600/20 hover:scale-105 transition-all">Start Your PIP Claim <ArrowRight size={16} /></Link>
             </div>
             <div className="space-y-4">
               <div className="bg-white p-6 rounded-2xl border border-emerald-100">
@@ -931,9 +799,381 @@ function BlogArticleView() {
           <p className="text-sm text-teal-700 font-medium mb-6">Book a session with Glen or start your PIP intake today.</p>
           <div className="flex flex-col sm:flex-row gap-3 justify-center">
             <button onClick={openBooking} className="px-8 py-3 bg-teal-700 text-white rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-teal-800 transition-all">Book a Session</button>
-            <Link to="/pip-intake" className="px-8 py-3 bg-white border border-teal-200 text-teal-700 rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-teal-50 transition-all text-center">PIP Intake Form</Link>
+            <Link to="/intake?insurance=true" className="px-8 py-3 bg-white border border-teal-200 text-teal-700 rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-teal-50 transition-all text-center">PIP Intake Form</Link>
           </div>
         </div>
+      </div>
+    </section>
+  );
+}
+
+// ── Booking Confirmed ───────────────────────────────────────────────────
+function BookingConfirmedView() {
+  return (
+    <section className="pt-32 pb-24 px-6 animate-in fade-in duration-500">
+      <div className="max-w-2xl mx-auto text-center">
+        <div className="w-20 h-20 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-6">
+          <Calendar className="text-emerald-600" size={40} />
+        </div>
+        <h2 className="text-3xl sm:text-4xl font-black text-slate-900 tracking-tighter mb-4">Your Appointment is Confirmed!</h2>
+        <p className="text-lg text-slate-500 font-medium mb-12 max-w-lg mx-auto">
+          We look forward to seeing you. If this is your first visit, please complete an intake form so Glen can prepare for your session.
+        </p>
+
+        <div className="space-y-4 max-w-md mx-auto">
+          <Link
+            to="/intake"
+            className="w-full flex items-center justify-between px-8 py-5 bg-teal-700 text-white rounded-2xl font-black text-sm uppercase tracking-widest shadow-2xl shadow-teal-700/30 hover:scale-[1.02] transition-all group"
+          >
+            <div className="text-left">
+              <span className="block">New Client Intake Form</span>
+              <span className="block text-[10px] font-bold text-teal-200 normal-case tracking-normal mt-1">First time? Complete your health information</span>
+            </div>
+            <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
+          </Link>
+
+          <Link
+            to="/intake?insurance=true"
+            className="w-full flex items-center justify-between px-8 py-5 bg-emerald-600 text-white rounded-2xl font-black text-sm uppercase tracking-widest shadow-xl shadow-emerald-600/20 hover:scale-[1.02] transition-all group"
+          >
+            <div className="text-left">
+              <span className="block">Insurance / PIP Claim</span>
+              <span className="block text-[10px] font-bold text-emerald-200 normal-case tracking-normal mt-1">Auto accident or insurance-covered visit</span>
+            </div>
+            <ArrowRight size={18} className="group-hover:translate-x-1 transition-transform" />
+          </Link>
+
+          <Link
+            to="/"
+            className="w-full flex items-center justify-center px-8 py-4 bg-white border border-slate-200 text-slate-500 rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-slate-50 transition-all"
+          >
+            Returning Client — I'm All Set
+          </Link>
+        </div>
+
+        <p className="mt-10 text-xs text-slate-400 font-bold">
+          Questions? Call <a href="tel:+13605210804" className="text-teal-600 underline">(360) 521-0804</a>
+        </p>
+      </div>
+    </section>
+  );
+}
+
+// ── Unified Intake Form (Public) ────────────────────────────────────────
+
+const MEDICAL_CONDITIONS = [
+  'Arthritis', 'Auto-immune condition', 'Back problems', 'Blood clots',
+  'Broken/dislocated bones', 'Bruise easily', 'Cancer', 'Chemical dependency',
+  'Chronic pain', 'Constipation/diarrhea', 'Depression/panic disorder',
+  'Diabetes', 'Diverticulitis', 'Headaches', 'Heart condition',
+  'Hepatitis A/B/C', 'High blood pressure', 'Insomnia',
+  'Muscle strain/sprain', 'Pregnancy', 'Scoliosis', 'Seizures',
+  'Skin conditions', 'Stroke', 'Surgery', 'TMJ disorder', 'Whiplash',
+];
+
+const CURRENT_SYMPTOMS = [
+  'Skin rash', 'Cold/flu', 'Open cuts', 'Severe pain',
+  'Anything contagious', 'Injuries/bruises',
+];
+
+const ALLERGY_TYPES = ['Medications', 'Foods', 'Environmental', 'Skin care products'];
+
+const PAIN_AREAS = [
+  'Head', 'Neck', 'Upper back', 'Mid back', 'Lower back',
+  'Left shoulder', 'Right shoulder', 'Left arm/hand', 'Right arm/hand',
+  'Left hip', 'Right hip', 'Left knee/leg', 'Right knee/leg',
+  'Jaw', 'Chest',
+];
+
+const INSURANCE_TYPES = ['Group', 'PIP / Auto', "Worker's Compensation"];
+
+function UnifiedIntakeView() {
+  const location = useLocation();
+  const showInsurance = new URLSearchParams(location.search).get('insurance') === 'true';
+
+  const [form, setForm] = useState({
+    firstName: '', lastName: '', dateOfBirth: '', email: '', phone: '',
+    address: '', city: '', state: '', postalCode: '',
+    occupation: '', employer: '',
+    emergencyContact: '', emergencyPhone: '',
+    previousMassage: null, massageTypes: '', massageFrequency: '', massageGoals: '',
+    medicalConditions: [], currentSymptoms: [], allergies: [], allergyDetails: '',
+    medications: '', surgeries: '',
+    primaryCareProvider: '', primaryCarePhone: '',
+    areasOfPain: [],
+    hasInsuranceClaim: showInsurance,
+    insuranceType: showInsurance ? 'PIP / Auto' : '',
+    insuredName: '', insuredDob: '',
+    insuranceCompany: '', insurancePhone: '',
+    insuranceAddress: '', insuranceCity: '', insuranceState: '', insuranceZip: '',
+    policyNumber: '', planNumber: '', claimNumber: '', memberNumber: '',
+    groupNumber: '', idNumber: '', effectiveDate: '',
+    hasDeductible: null, deductibleAmount: '', deductibleMet: null,
+    amountRemaining: '', copayAmount: '', maxVisits: '',
+    dateOfAccident: '', attorneyName: '', attorneyPhone: '',
+    adjusterName: '', adjusterPhone: '', lawFirm: '',
+    injuryDescription: '',
+    consentToTreat: false, hipaAcknowledgment: false, cancellationPolicy: false, consentToConsult: false,
+  });
+  const [submitting, setSubmitting] = useState(false);
+  const [success, setSuccess] = useState(false);
+  const [error, setError] = useState(null);
+  const [insuranceOpen, setInsuranceOpen] = useState(showInsurance);
+
+  const set = (key, value) => setForm(prev => ({ ...prev, [key]: value }));
+  const toggleArray = (key, item) => setForm(prev => ({
+    ...prev,
+    [key]: prev[key].includes(item) ? prev[key].filter(i => i !== item) : [...prev[key], item],
+  }));
+
+  const inputClass = "w-full p-4 bg-slate-50 border border-slate-200 rounded-2xl font-bold text-slate-900 focus:outline-none focus:ring-2 focus:ring-teal-500";
+  const labelClass = "text-[10px] font-black uppercase text-slate-400 tracking-widest mb-1 block";
+  const tealInputClass = "w-full p-4 bg-white border border-teal-200 rounded-2xl font-bold text-slate-900 focus:outline-none focus:ring-2 focus:ring-teal-500";
+  const tealLabelClass = "text-[10px] font-black uppercase text-teal-600 tracking-widest mb-1 block";
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    if (!form.consentToTreat || !form.hipaAcknowledgment || !form.cancellationPolicy) {
+      setError('Please accept all consent agreements before submitting.');
+      return;
+    }
+    setSubmitting(true);
+    setError(null);
+    try {
+      const res = await fetch('/api/intake', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(form),
+      });
+      if (!res.ok) { const err = await res.json(); throw new Error(err.error || 'Submission failed'); }
+      setSuccess(true);
+    } catch (err) { setError(err.message); } finally { setSubmitting(false); }
+  };
+
+  if (success) {
+    return (
+      <section className="pt-32 pb-24 px-6 animate-in fade-in duration-500">
+        <div className="max-w-2xl mx-auto text-center">
+          <div className="w-20 h-20 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-6"><CheckCircle2 className="text-emerald-600" size={40} /></div>
+          <h2 className="text-4xl font-black text-slate-900 mb-4">Intake Received</h2>
+          <p className="text-lg text-slate-500 font-medium mb-8">Thank you. Glen will review your information and contact you within one business day.</p>
+          <p className="text-sm text-slate-400 font-bold mb-10">If you need immediate assistance, call <strong>(360) 521-0804</strong>.</p>
+          <Link to="/" className="px-10 py-4 bg-teal-700 text-white rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-teal-800 transition-all inline-block">Return Home</Link>
+        </div>
+      </section>
+    );
+  }
+
+  return (
+    <section className="pt-32 pb-24 px-6 animate-in fade-in duration-500">
+      <div className="max-w-3xl mx-auto">
+        <div className="text-center mb-12">
+          <div className="inline-flex items-center gap-2 px-3 py-1 bg-emerald-50 text-emerald-700 rounded-full text-[10px] font-black uppercase tracking-widest mb-6"><ShieldCheck size={14} /> HIPAA-Compliant Secure Form</div>
+          <h2 className="text-2xl sm:text-4xl font-black text-slate-900 tracking-tighter mb-4">Patient Intake Form</h2>
+          <p className="text-slate-500 font-medium max-w-xl mx-auto">Complete this form before your first visit. All information is encrypted and handled in accordance with HIPAA regulations.</p>
+        </div>
+
+        <form onSubmit={handleSubmit} className="space-y-8">
+          {/* Patient Information */}
+          <div className="bg-white p-6 sm:p-10 rounded-[2.5rem] border border-slate-100 shadow-sm">
+            <h3 className="text-lg font-black text-slate-900 mb-6 flex items-center gap-2"><User className="text-teal-600" size={22} /> Patient Information</h3>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+              <div><label className={labelClass}>First Name *</label><input type="text" required value={form.firstName} onChange={e => set('firstName', e.target.value)} className={inputClass} /></div>
+              <div><label className={labelClass}>Last Name *</label><input type="text" required value={form.lastName} onChange={e => set('lastName', e.target.value)} className={inputClass} /></div>
+              <div><label className={labelClass}>Date of Birth</label><input type="date" value={form.dateOfBirth} onChange={e => set('dateOfBirth', e.target.value)} className={inputClass} /></div>
+              <div><label className={labelClass}>Phone Number *</label><input type="tel" required value={form.phone} onChange={e => set('phone', e.target.value)} className={inputClass} /></div>
+              <div className="sm:col-span-2"><label className={labelClass}>Email Address</label><input type="email" value={form.email} onChange={e => set('email', e.target.value)} className={inputClass} /></div>
+              <div className="sm:col-span-2"><label className={labelClass}>Street Address</label><input type="text" value={form.address} onChange={e => set('address', e.target.value)} className={inputClass} /></div>
+              <div><label className={labelClass}>City</label><input type="text" value={form.city} onChange={e => set('city', e.target.value)} className={inputClass} /></div>
+              <div className="grid grid-cols-2 gap-4">
+                <div><label className={labelClass}>State</label><input type="text" value={form.state} onChange={e => set('state', e.target.value)} className={inputClass} /></div>
+                <div><label className={labelClass}>Zip</label><input type="text" value={form.postalCode} onChange={e => set('postalCode', e.target.value)} className={inputClass} /></div>
+              </div>
+              <div><label className={labelClass}>Occupation</label><input type="text" value={form.occupation} onChange={e => set('occupation', e.target.value)} className={inputClass} /></div>
+              <div><label className={labelClass}>Employer</label><input type="text" value={form.employer} onChange={e => set('employer', e.target.value)} className={inputClass} /></div>
+            </div>
+            <div className="mt-6 pt-6 border-t border-slate-100">
+              <h4 className="text-sm font-black text-slate-400 uppercase tracking-[0.15em] mb-4">Emergency Contact</h4>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+                <div><label className={labelClass}>Contact Name</label><input type="text" value={form.emergencyContact} onChange={e => set('emergencyContact', e.target.value)} className={inputClass} /></div>
+                <div><label className={labelClass}>Contact Phone</label><input type="tel" value={form.emergencyPhone} onChange={e => set('emergencyPhone', e.target.value)} className={inputClass} /></div>
+              </div>
+            </div>
+          </div>
+
+          {/* Massage History */}
+          <div className="bg-white p-6 sm:p-10 rounded-[2.5rem] border border-slate-100 shadow-sm">
+            <h3 className="text-lg font-black text-slate-900 mb-6 flex items-center gap-2"><Heart className="text-teal-600" size={22} /> Massage History & Goals</h3>
+            <div className="mb-6">
+              <label className={labelClass}>Have you received massage therapy in the past?</label>
+              <div className="flex gap-3 mt-2">
+                <button type="button" onClick={() => set('previousMassage', true)} className={`px-6 py-3 rounded-xl text-xs font-black uppercase border-2 transition-all ${form.previousMassage === true ? 'bg-teal-700 border-teal-700 text-white' : 'bg-slate-50 border-slate-200 text-slate-400'}`}>Yes</button>
+                <button type="button" onClick={() => set('previousMassage', false)} className={`px-6 py-3 rounded-xl text-xs font-black uppercase border-2 transition-all ${form.previousMassage === false ? 'bg-teal-700 border-teal-700 text-white' : 'bg-slate-50 border-slate-200 text-slate-400'}`}>No</button>
+              </div>
+            </div>
+            {form.previousMassage && (
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 mb-6">
+                <div><label className={labelClass}>Type of Massage</label><input type="text" value={form.massageTypes} onChange={e => set('massageTypes', e.target.value)} placeholder="e.g. Swedish, Deep Tissue" className={inputClass} /></div>
+                <div><label className={labelClass}>Frequency</label><input type="text" value={form.massageFrequency} onChange={e => set('massageFrequency', e.target.value)} placeholder="e.g. Weekly, Monthly" className={inputClass} /></div>
+              </div>
+            )}
+            <div><label className={labelClass}>What are your goals for massage therapy?</label><textarea value={form.massageGoals} onChange={e => set('massageGoals', e.target.value)} rows={3} className={inputClass + ' resize-none'} placeholder="Describe what you hope to achieve..." /></div>
+          </div>
+
+          {/* Medical History */}
+          <div className="bg-white p-6 sm:p-10 rounded-[2.5rem] border border-slate-100 shadow-sm">
+            <h3 className="text-lg font-black text-slate-900 mb-2 flex items-center gap-2"><ShieldCheck className="text-teal-600" size={22} /> Medical History</h3>
+            <p className="text-sm text-slate-500 font-medium mb-6">Check any conditions that have affected your health.</p>
+            <div className="mb-8">
+              <label className={labelClass}>Medical Conditions</label>
+              <div className="grid grid-cols-2 sm:grid-cols-3 gap-2 mt-2">
+                {MEDICAL_CONDITIONS.map(cond => (
+                  <button key={cond} type="button" onClick={() => toggleArray('medicalConditions', cond)} className={`p-3 rounded-xl text-[10px] font-black border-2 transition-all text-left ${form.medicalConditions.includes(cond) ? 'bg-teal-100 border-teal-300 text-teal-800' : 'bg-slate-50 border-slate-100 text-slate-400 hover:border-teal-200'}`}>{cond}</button>
+                ))}
+              </div>
+            </div>
+            <div className="mb-8">
+              <label className={labelClass}>Do you have any of the following today?</label>
+              <div className="flex flex-wrap gap-2 mt-2">
+                {CURRENT_SYMPTOMS.map(sym => (
+                  <button key={sym} type="button" onClick={() => toggleArray('currentSymptoms', sym)} className={`px-4 py-2 rounded-xl text-xs font-bold border-2 transition-all ${form.currentSymptoms.includes(sym) ? 'bg-red-50 border-red-300 text-red-700' : 'bg-slate-50 border-slate-100 text-slate-400'}`}>{sym}</button>
+                ))}
+              </div>
+            </div>
+            <div className="mb-8">
+              <label className={labelClass}>Allergies</label>
+              <div className="flex flex-wrap gap-2 mt-2 mb-3">
+                {ALLERGY_TYPES.map(a => (
+                  <button key={a} type="button" onClick={() => toggleArray('allergies', a)} className={`px-4 py-2 rounded-xl text-xs font-bold border-2 transition-all ${form.allergies.includes(a) ? 'bg-orange-50 border-orange-300 text-orange-700' : 'bg-slate-50 border-slate-100 text-slate-400'}`}>{a}</button>
+                ))}
+              </div>
+              {form.allergies.length > 0 && <input type="text" value={form.allergyDetails} onChange={e => set('allergyDetails', e.target.value)} placeholder="Please describe..." className={inputClass} />}
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6 mb-6">
+              <div><label className={labelClass}>Current Medications</label><textarea value={form.medications} onChange={e => set('medications', e.target.value)} rows={3} className={inputClass + ' resize-none'} placeholder="List any medications" /></div>
+              <div><label className={labelClass}>Previous Surgeries / Major Illnesses</label><textarea value={form.surgeries} onChange={e => set('surgeries', e.target.value)} rows={3} className={inputClass + ' resize-none'} placeholder="Include dates" /></div>
+            </div>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+              <div><label className={labelClass}>Primary Care Provider</label><input type="text" value={form.primaryCareProvider} onChange={e => set('primaryCareProvider', e.target.value)} className={inputClass} /></div>
+              <div><label className={labelClass}>Provider Phone</label><input type="tel" value={form.primaryCarePhone} onChange={e => set('primaryCarePhone', e.target.value)} className={inputClass} /></div>
+            </div>
+          </div>
+
+          {/* Areas of Pain */}
+          <div className="bg-white p-6 sm:p-10 rounded-[2.5rem] border border-slate-100 shadow-sm">
+            <h3 className="text-lg font-black text-slate-900 mb-2 flex items-center gap-2"><Activity className="text-teal-600" size={22} /> Areas of Discomfort</h3>
+            <p className="text-sm text-slate-500 font-medium mb-6">Select all areas where you are currently experiencing pain.</p>
+            <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
+              {PAIN_AREAS.map(area => (
+                <button key={area} type="button" onClick={() => toggleArray('areasOfPain', area)} className={`p-3 rounded-xl text-xs font-black border-2 transition-all text-left ${form.areasOfPain.includes(area) ? 'bg-teal-100 border-teal-300 text-teal-800' : 'bg-slate-50 border-slate-100 text-slate-400 hover:border-teal-200'}`}>{area}</button>
+              ))}
+            </div>
+          </div>
+
+          {/* Insurance (Optional, Collapsible) */}
+          <div className={`rounded-[2.5rem] border shadow-sm transition-all ${form.hasInsuranceClaim ? 'bg-teal-50/50 border-teal-200' : 'bg-white border-slate-100'}`}>
+            <button type="button" onClick={() => { setInsuranceOpen(!insuranceOpen); if (!form.hasInsuranceClaim) set('hasInsuranceClaim', true); }} className="w-full p-6 sm:p-10 flex items-center justify-between text-left">
+              <div>
+                <h3 className={`text-lg font-black flex items-center gap-2 ${form.hasInsuranceClaim ? 'text-teal-900' : 'text-slate-900'}`}><FileText className={form.hasInsuranceClaim ? 'text-teal-700' : 'text-teal-600'} size={22} /> Insurance & Claim Information</h3>
+                <p className={`text-sm font-medium mt-1 ${form.hasInsuranceClaim ? 'text-teal-700' : 'text-slate-500'}`}>{form.hasInsuranceClaim ? 'Complete the fields below.' : 'Skip if not filing an insurance claim.'}</p>
+              </div>
+              <div className="flex items-center gap-3 flex-shrink-0">
+                {!insuranceOpen && !form.hasInsuranceClaim && <span className="text-[10px] font-black uppercase text-slate-400 hidden sm:block">Optional</span>}
+                {insuranceOpen ? <ChevronUp className="text-slate-400" /> : <ChevronDown className="text-slate-400" />}
+              </div>
+            </button>
+            {insuranceOpen && (
+              <div className="px-6 sm:px-10 pb-6 sm:pb-10 space-y-6">
+                <div className="flex items-center gap-3">
+                  <button type="button" onClick={() => set('hasInsuranceClaim', !form.hasInsuranceClaim)} className={`relative w-12 h-7 rounded-full transition-all ${form.hasInsuranceClaim ? 'bg-teal-700' : 'bg-slate-300'}`}>
+                    <div className={`absolute top-1 w-5 h-5 bg-white rounded-full shadow transition-all ${form.hasInsuranceClaim ? 'left-6' : 'left-1'}`} />
+                  </button>
+                  <span className="text-sm font-bold text-slate-600">This is an insurance claim</span>
+                </div>
+                {form.hasInsuranceClaim && (
+                  <>
+                    <div>
+                      <label className={tealLabelClass}>Type of Insurance</label>
+                      <div className="flex flex-wrap gap-2 mt-1">
+                        {INSURANCE_TYPES.map(type => (
+                          <button key={type} type="button" onClick={() => set('insuranceType', form.insuranceType === type ? '' : type)} className={`px-5 py-3 rounded-xl text-xs font-black uppercase border-2 transition-all ${form.insuranceType === type ? 'bg-teal-700 border-teal-700 text-white' : 'bg-white border-teal-200 text-teal-600'}`}>{type}</button>
+                        ))}
+                      </div>
+                    </div>
+                    <div className="pt-4 border-t border-teal-100">
+                      <h4 className="text-sm font-black text-teal-800 uppercase tracking-[0.15em] mb-4">Insurance Company</h4>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+                        <div className="sm:col-span-2"><label className={tealLabelClass}>Insurance Company</label><input type="text" value={form.insuranceCompany} onChange={e => set('insuranceCompany', e.target.value)} placeholder="e.g. State Farm, Regence" className={tealInputClass} /></div>
+                        <div><label className={tealLabelClass}>Date of Accident</label><input type="date" value={form.dateOfAccident} onChange={e => set('dateOfAccident', e.target.value)} className={tealInputClass} /></div>
+                        <div><label className={tealLabelClass}>Claim Number</label><input type="text" value={form.claimNumber} onChange={e => set('claimNumber', e.target.value)} className={tealInputClass} /></div>
+                        <div><label className={tealLabelClass}>Policy Number</label><input type="text" value={form.policyNumber} onChange={e => set('policyNumber', e.target.value)} className={tealInputClass} /></div>
+                        <div><label className={tealLabelClass}>Group #</label><input type="text" value={form.groupNumber} onChange={e => set('groupNumber', e.target.value)} className={tealInputClass} /></div>
+                        <div><label className={tealLabelClass}>Member #</label><input type="text" value={form.memberNumber} onChange={e => set('memberNumber', e.target.value)} className={tealInputClass} /></div>
+                        <div><label className={tealLabelClass}>ID #</label><input type="text" value={form.idNumber} onChange={e => set('idNumber', e.target.value)} className={tealInputClass} /></div>
+                      </div>
+                    </div>
+                    <div className="pt-4 border-t border-teal-100">
+                      <h4 className="text-sm font-black text-teal-800 uppercase tracking-[0.15em] mb-4">Insured Person (if different from patient)</h4>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+                        <div><label className={tealLabelClass}>Insured's Name</label><input type="text" value={form.insuredName} onChange={e => set('insuredName', e.target.value)} className={tealInputClass} /></div>
+                        <div><label className={tealLabelClass}>Insured's Date of Birth</label><input type="date" value={form.insuredDob} onChange={e => set('insuredDob', e.target.value)} className={tealInputClass} /></div>
+                      </div>
+                    </div>
+                    <div className="pt-4 border-t border-teal-100">
+                      <h4 className="text-sm font-black text-teal-800 uppercase tracking-[0.15em] mb-4">Adjuster & Attorney (if applicable)</h4>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+                        <div><label className={tealLabelClass}>Adjuster Name</label><input type="text" value={form.adjusterName} onChange={e => set('adjusterName', e.target.value)} className={tealInputClass} /></div>
+                        <div><label className={tealLabelClass}>Adjuster Phone</label><input type="tel" value={form.adjusterPhone} onChange={e => set('adjusterPhone', e.target.value)} className={tealInputClass} /></div>
+                        <div><label className={tealLabelClass}>Attorney Name</label><input type="text" value={form.attorneyName} onChange={e => set('attorneyName', e.target.value)} className={tealInputClass} /></div>
+                        <div><label className={tealLabelClass}>Attorney Phone</label><input type="tel" value={form.attorneyPhone} onChange={e => set('attorneyPhone', e.target.value)} className={tealInputClass} /></div>
+                      </div>
+                    </div>
+                    <div className="pt-4 border-t border-teal-100">
+                      <label className={tealLabelClass}>Describe the Accident & Your Injuries</label>
+                      <textarea value={form.injuryDescription} onChange={e => set('injuryDescription', e.target.value)} rows={3} className={tealInputClass + ' resize-none'} placeholder="e.g. Rear-ended at a stoplight, experiencing neck and lower back pain..." />
+                    </div>
+                  </>
+                )}
+              </div>
+            )}
+          </div>
+
+          {/* Consent */}
+          <div className="bg-slate-50 p-6 sm:p-10 rounded-[2.5rem] border border-slate-200">
+            <h3 className="text-lg font-black text-slate-900 mb-6 flex items-center gap-2"><ShieldCheck className="text-teal-700" size={22} /> Contract for Care & Consent</h3>
+            <div className="bg-white rounded-2xl p-5 sm:p-6 border border-slate-100 mb-6">
+              <h4 className="text-sm font-black text-slate-700 mb-4">Contract for Care</h4>
+              <ul className="space-y-2 text-sm text-slate-600 font-medium">
+                <li className="flex items-start gap-2"><span className="text-teal-600 mt-0.5 flex-shrink-0">&bull;</span>I promise to participate fully as a member of my health care team.</li>
+                <li className="flex items-start gap-2"><span className="text-teal-600 mt-0.5 flex-shrink-0">&bull;</span>I will make sound choices regarding my treatment plan based on the information provided by my massage therapist.</li>
+                <li className="flex items-start gap-2"><span className="text-teal-600 mt-0.5 flex-shrink-0">&bull;</span>I agree to participate in the self-care program we select.</li>
+                <li className="flex items-start gap-2"><span className="text-teal-600 mt-0.5 flex-shrink-0">&bull;</span>I promise to inform my practitioner any time I feel my well-being is threatened or compromised.</li>
+                <li className="flex items-start gap-2"><span className="text-teal-600 mt-0.5 flex-shrink-0">&bull;</span>I expect my massage therapist to provide a safe and effective treatment.</li>
+              </ul>
+            </div>
+            <div className="bg-white rounded-2xl p-5 sm:p-6 border border-slate-100 mb-6">
+              <p className="text-sm text-slate-600 font-medium leading-relaxed">I understand that massage therapy is intended to enhance relaxation, reduce pain, increase range of motion, and improve circulation. Massage therapy is not a substitute for medical treatment. I am aware that the massage therapist does not diagnose illness or disease and that <strong>spinal manipulations are not part of massage therapy</strong>.</p>
+              <p className="text-sm text-slate-600 font-medium leading-relaxed mt-3">I have informed the massage therapist of all my known physical conditions and medications, and I will keep the therapist updated on any changes. If I experience any pain or discomfort during the session, I will immediately communicate that to the therapist.</p>
+            </div>
+            <div className="space-y-4">
+              <label className="flex items-start gap-3 cursor-pointer"><input type="checkbox" checked={form.consentToConsult} onChange={e => set('consentToConsult', e.target.checked)} className="w-5 h-5 rounded border-slate-300 text-teal-600 focus:ring-teal-500 mt-0.5" /><span className="text-sm font-bold text-slate-700">I give my massage therapist permission to consult with my health care provider regarding my health and treatment.</span></label>
+              <label className="flex items-start gap-3 cursor-pointer"><input type="checkbox" checked={form.consentToTreat} onChange={e => set('consentToTreat', e.target.checked)} className="w-5 h-5 rounded border-slate-300 text-teal-600 focus:ring-teal-500 mt-0.5" /><span className="text-sm font-bold text-slate-700">I have read the Contract for Care, understand its contents, and consent to treatment. *</span></label>
+              <label className="flex items-start gap-3 cursor-pointer"><input type="checkbox" checked={form.hipaAcknowledgment} onChange={e => set('hipaAcknowledgment', e.target.checked)} className="w-5 h-5 rounded border-slate-300 text-teal-600 focus:ring-teal-500 mt-0.5" /><span className="text-sm font-bold text-slate-700">I acknowledge HIPAA privacy practices and understand my health information will be kept confidential. *</span></label>
+              <label className="flex items-start gap-3 cursor-pointer"><input type="checkbox" checked={form.cancellationPolicy} onChange={e => set('cancellationPolicy', e.target.checked)} className="w-5 h-5 rounded border-slate-300 text-teal-600 focus:ring-teal-500 mt-0.5" /><span className="text-sm font-bold text-slate-700">I understand and agree to the 24-hour cancellation policy. I may be charged for missed appointments or late cancellations. *</span></label>
+            </div>
+            <p className="text-[10px] font-bold text-slate-400 mt-4">* Required</p>
+          </div>
+
+          {error && <div className="p-4 bg-red-50 border border-red-200 rounded-2xl text-red-700 font-bold text-sm text-center">{error}</div>}
+          <button type="submit" disabled={submitting || !form.consentToTreat || !form.hipaAcknowledgment || !form.cancellationPolicy} className="w-full py-6 bg-teal-700 text-white rounded-[2rem] font-black text-base sm:text-xl shadow-2xl shadow-teal-700/30 hover:scale-[1.02] active:scale-[0.98] transition-all disabled:opacity-50">
+            {submitting ? 'Submitting...' : 'Submit Secure Intake Form'}
+          </button>
+          <p className="text-center text-xs text-slate-400 font-medium">
+            Your information is encrypted and transmitted securely. By submitting, you agree to our{' '}
+            <Link to="/terms" className="text-teal-600 underline">Terms of Service</Link>{' '}and{' '}
+            <Link to="/hipaa" className="text-teal-600 underline">HIPAA Compliance</Link>{' '}policies.
+          </p>
+        </form>
       </div>
     </section>
   );
