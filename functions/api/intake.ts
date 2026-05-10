@@ -89,12 +89,84 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
   }
 
   try {
+    // Reject oversized payloads (50KB max for an intake form)
+    const contentLength = parseInt(request.headers.get('content-length') || '0', 10);
+    if (contentLength > 50000) {
+      return new Response(
+        JSON.stringify({ error: 'Request too large' }),
+        { status: 413, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
     const body: IntakePayload = await request.json();
+
+    // --- Input validation ---
+    const MAX_TEXT = 200;
+    const MAX_TEXTAREA = 1000;
+    const MAX_ARRAY = 30;
+
+    const truncate = (val: string | undefined, max: number): string | undefined =>
+      val ? val.slice(0, max) : undefined;
+
+    const validateArraySize = (arr: unknown[] | undefined, max: number): boolean =>
+      !arr || arr.length <= max;
 
     // Validate required fields
     if (!body.firstName || !body.lastName || !body.phone) {
       return new Response(
         JSON.stringify({ error: 'First name, last name, and phone are required' }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    // Enforce length limits on text fields
+    body.firstName = truncate(body.firstName, MAX_TEXT) || '';
+    body.lastName = truncate(body.lastName, MAX_TEXT) || '';
+    body.email = truncate(body.email, MAX_TEXT);
+    body.phone = truncate(body.phone, 20);
+    body.address = truncate(body.address, MAX_TEXT);
+    body.city = truncate(body.city, MAX_TEXT);
+    body.state = truncate(body.state, 50);
+    body.postalCode = truncate(body.postalCode, 20);
+    body.occupation = truncate(body.occupation, MAX_TEXT);
+    body.employer = truncate(body.employer, MAX_TEXT);
+    body.emergencyContact = truncate(body.emergencyContact, MAX_TEXT);
+    body.emergencyPhone = truncate(body.emergencyPhone, 20);
+    body.massageTypes = truncate(body.massageTypes, MAX_TEXT);
+    body.massageFrequency = truncate(body.massageFrequency, MAX_TEXT);
+    body.massageGoals = truncate(body.massageGoals, MAX_TEXTAREA);
+    body.allergyDetails = truncate(body.allergyDetails, MAX_TEXTAREA);
+    body.medications = truncate(body.medications, MAX_TEXTAREA);
+    body.surgeries = truncate(body.surgeries, MAX_TEXTAREA);
+    body.primaryCareProvider = truncate(body.primaryCareProvider, MAX_TEXT);
+    body.primaryCarePhone = truncate(body.primaryCarePhone, 20);
+    body.insuranceCompany = truncate(body.insuranceCompany, MAX_TEXT);
+    body.insurancePhone = truncate(body.insurancePhone, 20);
+    body.claimNumber = truncate(body.claimNumber, MAX_TEXT);
+    body.policyNumber = truncate(body.policyNumber, MAX_TEXT);
+    body.attorneyName = truncate(body.attorneyName, MAX_TEXT);
+    body.attorneyPhone = truncate(body.attorneyPhone, 20);
+    body.adjusterName = truncate(body.adjusterName, MAX_TEXT);
+    body.adjusterPhone = truncate(body.adjusterPhone, 20);
+    body.lawFirm = truncate(body.lawFirm, MAX_TEXT);
+    body.injuryDescription = truncate(body.injuryDescription, MAX_TEXTAREA);
+    body.insuredName = truncate(body.insuredName, MAX_TEXT);
+
+    // Validate array sizes
+    if (!validateArraySize(body.medicalConditions, MAX_ARRAY) ||
+        !validateArraySize(body.currentSymptoms, MAX_ARRAY) ||
+        !validateArraySize(body.allergies, MAX_ARRAY) ||
+        !validateArraySize(body.areasOfPain, MAX_ARRAY)) {
+      return new Response(
+        JSON.stringify({ error: 'Invalid form data' }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    // Validate email format (basic)
+    if (body.email && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(body.email)) {
+      return new Response(
+        JSON.stringify({ error: 'Invalid email address' }),
         { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
@@ -198,11 +270,11 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
     const result = await ghlResponse.json() as { contact?: { id?: string } };
 
     return new Response(
-      JSON.stringify({ success: true, contactId: result.contact?.id }),
+      JSON.stringify({ success: true }),
       { status: 201, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
   } catch (err) {
-    console.error('Intake submission error:', err);
+    console.error('Intake submission error:', err instanceof Error ? err.message : 'Unknown error');
     return new Response(
       JSON.stringify({ error: 'An unexpected error occurred. Please call (360) 521-0804.' }),
       { status: 500, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
