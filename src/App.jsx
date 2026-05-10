@@ -1072,7 +1072,7 @@ function UnifiedIntakeView() {
 
           {/* Insurance (Optional, Collapsible) */}
           <div className={`rounded-[2.5rem] border shadow-sm transition-all ${form.hasInsuranceClaim ? 'bg-teal-50/50 border-teal-200' : 'bg-white border-slate-100'}`}>
-            <button type="button" onClick={() => { setInsuranceOpen(!insuranceOpen); if (!form.hasInsuranceClaim) set('hasInsuranceClaim', true); }} className="w-full p-6 sm:p-10 flex items-center justify-between text-left">
+            <button type="button" onClick={() => setInsuranceOpen(!insuranceOpen)} className="w-full p-6 sm:p-10 flex items-center justify-between text-left">
               <div>
                 <h3 className={`text-lg font-black flex items-center gap-2 ${form.hasInsuranceClaim ? 'text-teal-900' : 'text-slate-900'}`}><FileText className={form.hasInsuranceClaim ? 'text-teal-700' : 'text-teal-600'} size={22} /> Insurance & Claim Information</h3>
                 <p className={`text-sm font-medium mt-1 ${form.hasInsuranceClaim ? 'text-teal-700' : 'text-slate-500'}`}>{form.hasInsuranceClaim ? 'Complete the fields below.' : 'Skip if not filing an insurance claim.'}</p>
