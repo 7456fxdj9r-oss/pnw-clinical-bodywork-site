@@ -52,6 +52,8 @@ export const onRequestPost: PagesFunction<Env> = async ({ request, env }) => {
       );
     }
 
+    const fromEmail = env.NOTIFICATION_FROM_EMAIL || 'booking@pnwclinicalbodywork.com';
+
     if (env.NOTIFICATION_EMAIL) {
       notifications.push(
         fetch('https://api.mailchannels.net/tx/v1/send', {
@@ -59,12 +61,44 @@ export const onRequestPost: PagesFunction<Env> = async ({ request, env }) => {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             personalizations: [{ to: [{ email: env.NOTIFICATION_EMAIL }] }],
-            from: {
-              email: env.NOTIFICATION_FROM_EMAIL || 'booking@pnwclinicalbodywork.com',
-              name: 'PNW Clinical Bodywork',
-            },
+            from: { email: fromEmail, name: 'PNW Clinical Bodywork' },
             subject: `New Booking: ${contactName}`,
             content: [{ type: 'text/plain', value: `New appointment booked:\n\nPatient: ${contactName}\nSession: ${calendarName}${timeDisplay ? `\nWhen: ${timeDisplay}` : ''}${contactEmail ? `\nEmail: ${contactEmail}` : ''}\n\nView schedule: https://portal.pnwclinicalbodywork.com` }],
+          }),
+        }).catch(() => {})
+      );
+    }
+
+    // Patient-facing intake email — fires on every appointment.created
+    if (contactEmail) {
+      const firstName = contactName.split(' ')[0] || 'there';
+      const whenLine = timeDisplay ? ` on ${timeDisplay}` : '';
+      const text = `Hi ${firstName},
+
+Thanks for booking your ${calendarName}${whenLine}. To make the most of your appointment, please fill out our intake form before you arrive:
+
+https://pnwclinicalbodywork.com/intake
+
+If your visit is being billed through PIP / auto insurance, use this link instead so we can capture your claim info:
+
+https://pnwclinicalbodywork.com/intake?insurance=true
+
+It only takes a few minutes and saves time when you arrive. Questions? Just reply to this email.
+
+— Glen Arn, LMT
+PNW Clinical Bodywork
+5514 NE 107th Ave., Ste. 100, Vancouver, WA 98662`;
+
+      notifications.push(
+        fetch('https://api.mailchannels.net/tx/v1/send', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            personalizations: [{ to: [{ email: contactEmail }] }],
+            from: { email: fromEmail, name: 'Glen Arn — PNW Clinical Bodywork' },
+            reply_to: { email: fromEmail, name: 'PNW Clinical Bodywork' },
+            subject: 'Welcome to PNW Clinical Bodywork — quick intake form',
+            content: [{ type: 'text/plain', value: text }],
           }),
         }).catch(() => {})
       );
