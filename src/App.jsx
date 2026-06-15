@@ -708,6 +708,28 @@ function InsuranceView() {
             <button onClick={openBooking} className="mt-6 w-full py-4 bg-teal-700 text-white rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-teal-800 transition-all shadow-lg shadow-teal-700/20">Book a Session</button>
           </div>
         </div>
+        <div className="bg-white p-8 sm:p-12 rounded-[3rem] border border-slate-100 shadow-sm mb-12">
+          <div className="text-center max-w-2xl mx-auto mb-10">
+            <div className="inline-flex items-center gap-2 px-3 py-1 bg-teal-50 text-teal-700 rounded-full text-[10px] font-black uppercase tracking-widest mb-4"><CreditCard size={14} /> Treatment Packages</div>
+            <h4 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">Save With a Package</h4>
+            <p className="mt-4 text-slate-500 font-medium leading-relaxed">For out-of-pocket patients, prepaid packages lower your per-session cost. Sessions never expire and are perfect for ongoing recovery and maintenance.</p>
+          </div>
+          <div className="grid md:grid-cols-2 gap-8 max-w-4xl mx-auto">
+            {[
+              {name:'Recovery Bundle',sessions:4,price:'$460',perVisit:'$115',blurb:'Four sessions for active injury recovery.'},
+              {name:'Wellness Pack',sessions:6,price:'$625',perVisit:'$104',blurb:'Six sessions for ongoing maintenance and prevention.'},
+            ].map((pkg) => (
+              <div key={pkg.name} className="flex flex-col p-8 bg-slate-50 rounded-[2rem] border border-slate-100">
+                <p className="text-sm font-black text-teal-600 uppercase tracking-widest mb-2">{pkg.name}</p>
+                <p className="text-4xl font-black text-slate-900 tracking-tighter">{pkg.price}</p>
+                <p className="text-sm font-bold text-slate-500 mt-1">{pkg.sessions} sessions &bull; {pkg.perVisit}/visit</p>
+                <p className="mt-4 text-sm text-slate-500 font-medium leading-relaxed flex-1">{pkg.blurb}</p>
+                <button onClick={openBooking} className="mt-6 w-full py-3.5 bg-teal-700 text-white rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-teal-800 transition-all shadow-lg shadow-teal-700/20">Get Started</button>
+              </div>
+            ))}
+          </div>
+          <p className="mt-8 text-center text-xs font-medium text-slate-400">Packages are paid up front and apply to 60-minute sessions. Questions? Call (360) 521-0804.</p>
+        </div>
         <div className="bg-slate-50 p-8 sm:p-12 rounded-[3rem] border border-slate-100">
           <h4 className="text-2xl font-black text-slate-900 mb-8 tracking-tight text-center">Common Questions</h4>
           <div className="grid md:grid-cols-2 gap-6 max-w-4xl mx-auto">
