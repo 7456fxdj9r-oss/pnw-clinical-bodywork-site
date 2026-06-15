@@ -147,7 +147,7 @@ const BLOG_ARTICLES = [
       { heading: 'The Diagnosis Merry-Go-Round', body: 'Her doctor said it was carpal tunnel. The nerve conduction test came back normal. Then it was "tendinitis." Then "overuse syndrome." She was told to take breaks, stretch more, and consider switching careers. As a senior developer making six figures, that last suggestion wasn\'t helpful.' },
       { heading: 'Looking Upstream', body: 'Glen\'s assessment revealed something the other providers had missed: the problem wasn\'t in Sarah\'s wrist. It was in her right pec minor, her anterior scalene, and her subscapularis — all muscles in her chest and shoulder that had shortened from years of forward-rounded posture. These muscles were compressing the brachial plexus, the nerve bundle that runs from the neck into the arm. Her wrist was where she felt the pain; her shoulder and chest were where it originated.' },
       { heading: 'Targeted Treatment', body: 'Glen spent almost no time on Sarah\'s wrist and forearm. Instead, he focused on releasing the pec minor and subscapularis using specific myofascial techniques, followed by scalene work to decompress the nerve pathway. The first session was intense — Sarah described it as "productive pain, not injury pain." By the end of the session, her grip strength had noticeably improved.' },
-      { heading: 'The Result', body: 'After six weekly sessions, Sarah could type a full workday without pain for the first time in two years. She still comes in monthly for maintenance, and she\'s added Glen\'s prescribed chest stretches to her morning routine. Total out-of-pocket cost: $600 (six sessions at $100). She\'d spent three times that on ergonomic equipment that addressed the symptom, not the cause.' },
+      { heading: 'The Result', body: 'After six weekly sessions, Sarah could type a full workday without pain for the first time in two years. She still comes in monthly for maintenance, and she\'s added Glen\'s prescribed chest stretches to her morning routine. Total out-of-pocket cost: $780 (six sessions at $130). She\'d spent three times that on ergonomic equipment that addressed the symptom, not the cause.' },
     ]
   },
   {
@@ -197,9 +197,9 @@ function BookingModal() {
               <p className="text-[10px] font-black uppercase text-slate-400 mb-4 tracking-widest">Select Session Length</p>
               <div className="grid grid-cols-1 gap-3">
                 {[
-                  { label: '60-Minute Session', price: '$100', url: BOOKING_URLS['60'] },
-                  { label: '90-Minute Session', price: '$150', url: BOOKING_URLS['90'] },
-                  { label: '2-Hour Session', price: '$200', url: BOOKING_URLS['120'] },
+                  { label: '60-Minute Session', price: '$130', url: BOOKING_URLS['60'] },
+                  { label: '90-Minute Session', price: '$195', url: BOOKING_URLS['90'] },
+                  { label: '2-Hour Session', price: '$260', url: BOOKING_URLS['120'] },
                 ].map(s => (
                   <button key={s.label} onClick={() => setSelectedBookingUrl(s.url)} className="px-5 py-4 border border-slate-200 rounded-2xl font-bold text-slate-700 hover:border-teal-500 hover:bg-teal-50 transition-all flex items-center justify-between group text-left">
                     <div>
@@ -210,6 +210,7 @@ function BookingModal() {
                   </button>
                 ))}
               </div>
+              <p className="mt-3 text-[10px] font-bold text-slate-400 text-center">Same-day payment pricing — no tip required.</p>
             </div>
             <div className="text-center space-y-2">
               <p className="text-[10px] font-bold text-slate-400">MVA/PIP patients — start your intake here:</p>
@@ -531,10 +532,10 @@ function ServicesView() {
         </div>
         <div className="grid md:grid-cols-2 gap-8">
           {[
-            { name: "Myofascial Release", time: "60/90 Min", price: "$100+", desc: "Targets the stiff connective tissue to reduce chronic pain and improve flexibility.", icon: Activity },
+            { name: "Myofascial Release", time: "60/90 Min", price: "$130+", desc: "Targets the stiff connective tissue to reduce chronic pain and improve flexibility.", icon: Activity },
             { name: "Injury Rehabilitation", time: "60/90 Min", price: "Insurance/PIP", desc: "Focuses on repairing damaged tissues from car accidents, surgeries, or repetitive strain.", icon: Stethoscope },
-            { name: "Deep Tissue Massage", time: "60/90 Min", price: "$100+", desc: "Firm strokes on deeper layers of muscle to relieve stubborn chronic tension.", icon: Heart },
-            { name: "Trigger Point Therapy", time: "60 Min", price: "$100", desc: "Focused pressure on 'knots' that cause referred pain in other parts of the body.", icon: Users }
+            { name: "Deep Tissue Massage", time: "60/90 Min", price: "$130+", desc: "Firm strokes on deeper layers of muscle to relieve stubborn chronic tension.", icon: Heart },
+            { name: "Trigger Point Therapy", time: "60 Min", price: "$130", desc: "Focused pressure on 'knots' that cause referred pain in other parts of the body.", icon: Users }
           ].map((s, i) => (
             <div key={i} className="p-6 sm:p-10 bg-slate-50 rounded-2xl sm:rounded-[3rem] border border-slate-100 flex flex-col items-start hover:bg-white hover:shadow-2xl hover:border-teal-100 transition-all group">
               <div className="w-12 h-12 bg-white rounded-2xl flex items-center justify-center mb-6 shadow-sm group-hover:bg-teal-700 group-hover:text-white transition-colors">
@@ -623,7 +624,7 @@ function TermsView() {
       <div><h2 className="text-xl font-black text-slate-900 mb-3">Agreement to Terms</h2><p>By accessing this website or booking an appointment with PNW Clinical Bodywork, you agree to the following terms. If you do not agree, please do not use our services.</p></div>
       <div><h2 className="text-xl font-black text-slate-900 mb-3">Services</h2><p>PNW Clinical Bodywork provides clinical massage therapy services including myofascial release, injury rehabilitation, deep tissue massage, and trigger point therapy. Our services are therapeutic in nature and are not a substitute for medical diagnosis or treatment by a physician.</p></div>
       <div><h2 className="text-xl font-black text-slate-900 mb-3">Appointments &amp; Cancellation</h2><ul className="list-disc pl-6 space-y-2"><li>Appointments are scheduled through our online booking system or by phone at (360) 521-0804.</li><li>We require <strong>24 hours' notice</strong> for cancellations. Late cancellations or no-shows may be subject to a fee equal to the full session rate.</li><li>We reserve the right to limit scheduling to a maximum of 4 appointments per day to ensure quality of care.</li></ul></div>
-      <div><h2 className="text-xl font-black text-slate-900 mb-3">Pricing &amp; Payment</h2><ul className="list-disc pl-6 space-y-2"><li>60-Minute Session: $100</li><li>90-Minute Session: $150</li><li>2-Hour Session: $200</li><li>PIP and auto accident claims are billed directly to the insurance provider.</li><li>Payment is due at the time of service unless covered by insurance.</li></ul></div>
+      <div><h2 className="text-xl font-black text-slate-900 mb-3">Pricing &amp; Payment</h2><ul className="list-disc pl-6 space-y-2"><li>60-Minute Session: $130</li><li>90-Minute Session: $195</li><li>2-Hour Session: $260</li><li>Listed rates are our same-day payment (online) pricing — no tip required.</li><li>PIP and auto accident claims are billed directly to the insurance provider.</li><li>Payment is due at the time of service unless covered by insurance.</li></ul></div>
       <div><h2 className="text-xl font-black text-slate-900 mb-3">Referral Program</h2><p>When you refer a new client, both you and the referred client receive $25 off your next session. Referral credits are non-transferable and cannot be redeemed for cash.</p></div>
       <div><h2 className="text-xl font-black text-slate-900 mb-3">Insurance &amp; PIP Claims</h2><p>We accept Regence BlueCross BlueShield and process PIP/auto accident claims. It is the client's responsibility to verify their coverage and provide accurate insurance information. We are not responsible for claims denied due to policy limitations or incorrect information.</p></div>
       <div><h2 className="text-xl font-black text-slate-900 mb-3">Limitation of Liability</h2><p>PNW Clinical Bodywork provides services with professional care and skill. However, results vary by individual. We are not liable for outcomes that fall outside the scope of licensed massage therapy practice. By receiving treatment, you acknowledge that you have disclosed all relevant medical conditions and understand the nature of the services provided.</p></div>
@@ -698,11 +699,12 @@ function InsuranceView() {
             <div className="w-14 h-14 bg-slate-100 rounded-2xl flex items-center justify-center mb-6"><CreditCard className="text-slate-600" size={28} /></div>
             <h4 className="text-2xl font-black text-slate-900 mb-4">Out-of-Pocket Rates</h4>
             <div className="space-y-3">
-              {[{session:'60-Minute Session',price:'$100'},{session:'90-Minute Session',price:'$150'},{session:'2-Hour Session',price:'$200'}].map((item) => (
+              {[{session:'60-Minute Session',price:'$130'},{session:'90-Minute Session',price:'$195'},{session:'2-Hour Session',price:'$260'}].map((item) => (
                 <div key={item.session} className="flex justify-between items-center p-4 bg-slate-50 rounded-2xl border border-slate-100"><span className="font-bold text-slate-700">{item.session}</span><span className="font-black text-teal-700 text-lg">{item.price}</span></div>
               ))}
             </div>
-            <p className="mt-6 text-sm text-slate-500 font-medium leading-relaxed">Payment is due at the time of service. We accept cash, check, and major credit cards.</p>
+            <p className="mt-4 text-xs font-bold text-teal-600">Same-day payment pricing — no tip required.</p>
+            <p className="mt-3 text-sm text-slate-500 font-medium leading-relaxed">Payment is due at the time of service. We accept cash, check, and major credit cards.</p>
             <button onClick={openBooking} className="mt-6 w-full py-4 bg-teal-700 text-white rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-teal-800 transition-all shadow-lg shadow-teal-700/20">Book a Session</button>
           </div>
         </div>
