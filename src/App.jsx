@@ -446,7 +446,7 @@ function HomeView({ onWatchStory }) {
           </div>
           <div className="relative animate-in fade-in zoom-in duration-1000">
             <div className="aspect-[4/5] bg-slate-100 rounded-[3rem] overflow-hidden shadow-2xl ring-8 ring-white relative group">
-              <div className="absolute inset-0 bg-[url('/images/glen-hero.jpg')] bg-cover bg-center"></div>
+              <div className="absolute inset-0 bg-[url('/images/glen-hero-v2.jpg')] bg-cover bg-center"></div>
               <div className="absolute inset-0 bg-teal-900/20 mix-blend-multiply"></div>
               <div className="absolute bottom-4 left-4 right-4 p-4 sm:bottom-10 sm:left-10 sm:right-10 sm:p-6 bg-white/90 backdrop-blur-md rounded-3xl border border-white/50 shadow-xl">
                 <p className="text-teal-900 font-black italic text-sm sm:text-lg leading-tight">"After just a few sessions with Glen, I had less pain and increased range of motion. I highly recommend him."</p>
@@ -564,7 +564,7 @@ function AboutView() {
         <div className="grid lg:grid-cols-2 gap-10 lg:gap-20 items-center">
           <div className="relative">
             <div className="aspect-[4/5] bg-slate-100 rounded-[4rem] overflow-hidden shadow-2xl relative">
-              <div className="absolute inset-0 bg-[url('/images/glen-arn.jpg')] bg-cover bg-center bg-top"></div>
+              <div className="absolute inset-0 bg-[url('/images/glen-arn-v2.jpg')] bg-cover bg-center bg-top"></div>
               <div className="absolute inset-0 bg-teal-900/10"></div>
             </div>
             <div className="absolute -bottom-4 left-4 sm:-bottom-6 sm:-left-6 bg-white p-8 rounded-3xl shadow-xl border border-slate-50">
@@ -573,7 +573,7 @@ function AboutView() {
             </div>
           </div>
           <div>
-            <h2 className="text-sm font-black text-teal-600 uppercase tracking-widest mb-4">Meet Glen Arn, LMT</h2>
+            <h2 className="text-sm font-black text-teal-600 uppercase tracking-widest mb-4">Meet Glen Arn, LMP</h2>
             <h3 className="text-3xl sm:text-5xl font-black text-slate-900 leading-tight mb-8 tracking-tighter">Helping you get back to the things you love.</h3>
             <div className="space-y-6 text-slate-600 font-medium leading-relaxed text-lg">
               <p>Glen grew up in the Pacific Northwest and has lived the active lifestyle he helps his clients maintain. Having sustained roughly 15 broken bones himself, Glen understands pain from the inside out.</p>
@@ -607,7 +607,7 @@ function LegalPage({ title, children }) {
 function PrivacyView() {
   return (
     <LegalPage title="Privacy Policy">
-      <div><h2 className="text-xl font-black text-slate-900 mb-3">Who We Are</h2><p>PNW Clinical Bodywork is a licensed massage therapy practice operated by Glen Arn, LMT #77218, located at 5514 NE 107th Ave. Ste. 101, Vancouver, WA 98662. This policy describes how we collect, use, and protect your personal information.</p></div>
+      <div><h2 className="text-xl font-black text-slate-900 mb-3">Who We Are</h2><p>PNW Clinical Bodywork is a licensed massage therapy practice operated by Glen Arn, LMP #MA00023548, located at 5514 NE 107th Ave. Ste. 101, Vancouver, WA 98662. This policy describes how we collect, use, and protect your personal information.</p></div>
       <div><h2 className="text-xl font-black text-slate-900 mb-3">Information We Collect</h2><ul className="list-disc pl-6 space-y-2"><li><strong>Contact information:</strong> Name, email, phone number, and mailing address when you book an appointment or submit an inquiry.</li><li><strong>Health information:</strong> Intake forms, treatment history, SOAP notes, and insurance details necessary for clinical care and billing. This information is protected under HIPAA (see our HIPAA Compliance page).</li><li><strong>Booking data:</strong> Appointment dates, times, and session preferences collected through our scheduling system.</li><li><strong>Website usage:</strong> We do not use third-party analytics or tracking scripts on this website. No cookies are set for advertising purposes.</li></ul></div>
       <div><h2 className="text-xl font-black text-slate-900 mb-3">How We Use Your Information</h2><ul className="list-disc pl-6 space-y-2"><li>To provide and coordinate your clinical care</li><li>To process insurance claims and PIP billing</li><li>To communicate appointment reminders and follow-ups</li><li>To comply with legal and regulatory requirements</li></ul></div>
       <div><h2 className="text-xl font-black text-slate-900 mb-3">Information Sharing</h2><p>We do not sell, rent, or trade your personal information. We may share your information only in the following circumstances:</p><ul className="list-disc pl-6 space-y-2 mt-2"><li><strong>Insurance companies:</strong> To process claims and PIP/auto accident billing on your behalf.</li><li><strong>Legal requirements:</strong> When required by law, court order, or regulatory authority.</li><li><strong>Service providers:</strong> Our scheduling and practice management platform (Go High Level) processes booking and communication data under a Business Associate Agreement.</li></ul></div>
@@ -639,11 +639,11 @@ function HipaaView() {
     <LegalPage title="HIPAA Compliance">
       <div><h2 className="text-xl font-black text-slate-900 mb-3">Our Commitment</h2><p>PNW Clinical Bodywork is committed to protecting the privacy and security of your Protected Health Information (PHI) in accordance with the Health Insurance Portability and Accountability Act of 1996 (HIPAA) and the Washington State Health Care Information Act (RCW 70.02).</p></div>
       <div><h2 className="text-xl font-black text-slate-900 mb-3">What Is Protected Health Information?</h2><p>PHI includes any individually identifiable health information related to your past, present, or future care. This includes your name, contact details, treatment records, SOAP notes, diagnosis codes, insurance information, and billing records.</p></div>
-      <div><h2 className="text-xl font-black text-slate-900 mb-3">How We Protect Your PHI</h2><ul className="list-disc pl-6 space-y-2"><li><strong>Access controls:</strong> Only Glen Arn, LMT and authorized staff have access to patient records. Access is role-based and password-protected.</li><li><strong>Encryption:</strong> All data in transit is encrypted via TLS/HTTPS. Clinical records are stored in systems that encrypt data at rest.</li><li><strong>Session security:</strong> Our clinical portal enforces automatic logout after 20 minutes of inactivity.</li><li><strong>Business Associate Agreements:</strong> We maintain BAAs with all third-party vendors who handle PHI on our behalf.</li><li><strong>Minimum necessary:</strong> We only access, use, and share the minimum amount of PHI required to provide your care and process billing.</li></ul></div>
+      <div><h2 className="text-xl font-black text-slate-900 mb-3">How We Protect Your PHI</h2><ul className="list-disc pl-6 space-y-2"><li><strong>Access controls:</strong> Only Glen Arn, LMP and authorized staff have access to patient records. Access is role-based and password-protected.</li><li><strong>Encryption:</strong> All data in transit is encrypted via TLS/HTTPS. Clinical records are stored in systems that encrypt data at rest.</li><li><strong>Session security:</strong> Our clinical portal enforces automatic logout after 20 minutes of inactivity.</li><li><strong>Business Associate Agreements:</strong> We maintain BAAs with all third-party vendors who handle PHI on our behalf.</li><li><strong>Minimum necessary:</strong> We only access, use, and share the minimum amount of PHI required to provide your care and process billing.</li></ul></div>
       <div><h2 className="text-xl font-black text-slate-900 mb-3">Your Rights Under HIPAA</h2><p>As a patient, you have the right to:</p><ul className="list-disc pl-6 space-y-2 mt-2"><li><strong>Access:</strong> Request a copy of your health records.</li><li><strong>Amendment:</strong> Request corrections to inaccurate information in your records.</li><li><strong>Accounting of disclosures:</strong> Request a list of entities to whom we have disclosed your PHI.</li><li><strong>Restriction:</strong> Request restrictions on certain uses or disclosures of your PHI.</li><li><strong>Confidential communications:</strong> Request that we communicate with you through a specific method or at a specific location.</li><li><strong>Complaint:</strong> File a complaint if you believe your privacy rights have been violated, without fear of retaliation.</li></ul></div>
       <div><h2 className="text-xl font-black text-slate-900 mb-3">Permitted Uses and Disclosures</h2><p>We may use or disclose your PHI without your authorization for the following purposes:</p><ul className="list-disc pl-6 space-y-2 mt-2"><li><strong>Treatment:</strong> To provide, coordinate, or manage your care.</li><li><strong>Payment:</strong> To bill and collect payment from you or your insurance provider, including PIP and auto accident claims.</li><li><strong>Healthcare operations:</strong> For quality assurance, compliance, and administrative functions.</li><li><strong>Legal requirements:</strong> When required by federal, state, or local law.</li></ul><p className="mt-2">All other uses and disclosures require your written authorization, which you may revoke at any time.</p></div>
       <div><h2 className="text-xl font-black text-slate-900 mb-3">Breach Notification</h2><p>In the event of a breach of unsecured PHI, we will notify affected individuals within 60 days as required by the HIPAA Breach Notification Rule. If a breach affects more than 500 individuals, we will also notify the U.S. Department of Health and Human Services and local media.</p></div>
-      <div><h2 className="text-xl font-black text-slate-900 mb-3">Contact &amp; Complaints</h2><p>To exercise your rights, request information, or file a complaint, contact:</p><div className="mt-3 p-6 bg-slate-50 rounded-2xl border border-slate-100"><p className="font-black text-slate-900">Glen Arn, LMT — Privacy Officer</p><p>PNW Clinical Bodywork</p><p>5514 NE 107th Ave. Ste. 101, Vancouver, WA 98662</p><p>Phone: (360) 521-0804</p></div><p className="mt-4">You may also file a complaint with the U.S. Department of Health and Human Services Office for Civil Rights at <span className="font-bold">hhs.gov/ocr</span>.</p></div>
+      <div><h2 className="text-xl font-black text-slate-900 mb-3">Contact &amp; Complaints</h2><p>To exercise your rights, request information, or file a complaint, contact:</p><div className="mt-3 p-6 bg-slate-50 rounded-2xl border border-slate-100"><p className="font-black text-slate-900">Glen Arn, LMP — Privacy Officer</p><p>PNW Clinical Bodywork</p><p>5514 NE 107th Ave. Ste. 101, Vancouver, WA 98662</p><p>Phone: (360) 521-0804</p></div><p className="mt-4">You may also file a complaint with the U.S. Department of Health and Human Services Office for Civil Rights at <span className="font-bold">hhs.gov/ocr</span>.</p></div>
     </LegalPage>
   );
 }
@@ -761,7 +761,7 @@ function BlogListView() {
         <div className="text-center mb-12">
           <h2 className="text-sm font-black text-teal-600 uppercase tracking-widest mb-4">Clinical Insights</h2>
           <h3 className="text-3xl sm:text-5xl font-black text-slate-900 tracking-tighter">Recovery Resources</h3>
-          <p className="mt-6 text-slate-500 max-w-2xl mx-auto font-medium">Expert guidance on injury recovery, insurance claims, and clinical massage therapy from Glen Arn, LMT.</p>
+          <p className="mt-6 text-slate-500 max-w-2xl mx-auto font-medium">Expert guidance on injury recovery, insurance claims, and clinical massage therapy from Glen Arn, LMP.</p>
         </div>
         <div className="flex flex-wrap justify-center gap-2 mb-12">
           {categories.map(cat => (
@@ -811,7 +811,7 @@ function BlogArticleView() {
         <p className="text-lg text-slate-500 font-medium mb-10 leading-relaxed">{article.excerpt}</p>
         <div className="flex items-center gap-3 mb-12 pb-8 border-b border-slate-100">
           <div className="w-10 h-10 rounded-full bg-teal-700 text-white flex items-center justify-center font-black text-sm">GA</div>
-          <div><p className="text-sm font-black text-slate-900">Glen Arn, LMT</p><p className="text-[10px] font-bold text-slate-400 uppercase">Licensed Massage Therapist #77218</p></div>
+          <div><p className="text-sm font-black text-slate-900">Glen Arn, LMP</p><p className="text-[10px] font-bold text-slate-400 uppercase">Licensed Massage Practitioner #MA00023548</p></div>
         </div>
         <div className="space-y-10">
           {article.content.map((section, i) => (
