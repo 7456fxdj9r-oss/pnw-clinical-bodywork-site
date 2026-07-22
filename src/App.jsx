@@ -448,9 +448,14 @@ function HomeView({ onWatchStory }) {
             <div className="aspect-[4/5] bg-slate-100 rounded-[3rem] overflow-hidden shadow-2xl ring-8 ring-white relative group">
               <div className="absolute inset-0 bg-[url('/images/glen-hero-v2.jpg')] bg-cover bg-center"></div>
               <div className="absolute inset-0 bg-teal-900/20 mix-blend-multiply"></div>
-              <div className="absolute bottom-4 left-4 right-4 p-4 sm:bottom-10 sm:left-10 sm:right-10 sm:p-6 bg-white/90 backdrop-blur-md rounded-3xl border border-white/50 shadow-xl">
-                <p className="text-teal-900 font-black italic text-sm sm:text-lg leading-tight">"After just a few sessions with Glen, I had less pain and increased range of motion. I highly recommend him."</p>
-                <p className="mt-3 text-xs font-black uppercase text-teal-600 tracking-widest">— Carrie F.</p>
+              <div className="absolute bottom-4 left-4 right-4 p-4 sm:bottom-8 sm:left-8 sm:right-8 sm:p-5 bg-white/90 backdrop-blur-md rounded-3xl border border-white/50 shadow-xl flex items-center gap-4">
+                <div className="w-11 h-11 rounded-2xl bg-teal-700 flex items-center justify-center flex-shrink-0">
+                  <svg viewBox="0 0 48 48" fill="none" className="w-6 h-6"><path d="M2 25 H12.5 L16.5 25 L20 11 L25 38.5 L29 18.5 L32.5 25 H46" stroke="#ffffff" strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round"/></svg>
+                </div>
+                <div>
+                  <p className="text-teal-900 font-black text-base sm:text-lg leading-none">Glen Arn, LMP</p>
+                  <p className="mt-1.5 text-[10px] sm:text-xs font-black uppercase text-teal-600 tracking-widest">Injury Recovery Specialist</p>
+                </div>
               </div>
             </div>
             <div className="absolute -bottom-6 -right-6 w-32 h-32 bg-emerald-100 rounded-3xl -z-10 animate-pulse hidden sm:block"></div>
@@ -514,6 +519,26 @@ function HomeView({ onWatchStory }) {
               </div>
             ))}
           </div>
+        </div>
+      </section>
+
+      <section className="py-24 bg-gradient-to-b from-white to-teal-50/50">
+        <div className="max-w-4xl mx-auto px-6 text-center">
+          <h2 className="text-sm font-black text-teal-600 uppercase tracking-widest mb-4">What Patients Say</h2>
+          <h3 className="text-3xl sm:text-5xl font-black text-slate-900 tracking-tighter mb-14">Real recovery, real relief</h3>
+          <figure className="relative bg-white rounded-[3rem] border border-teal-100 shadow-xl px-8 py-12 sm:px-16 sm:py-16">
+            <div aria-hidden="true" className="absolute top-3 left-8 sm:left-12 text-8xl leading-none font-black text-teal-100 select-none">&ldquo;</div>
+            <blockquote className="relative text-xl sm:text-3xl font-bold text-slate-800 leading-snug tracking-tight max-w-2xl mx-auto">
+              After just a few sessions with Glen, I had less pain and increased range of motion. I highly recommend him.
+            </blockquote>
+            <figcaption className="mt-10 flex items-center justify-center gap-3">
+              <div className="w-11 h-11 rounded-full bg-teal-100 flex items-center justify-center font-black text-teal-700 flex-shrink-0">C</div>
+              <div className="text-left">
+                <p className="font-black text-slate-900 leading-none">Carrie F.</p>
+                <p className="text-[10px] font-black uppercase text-teal-600 tracking-widest mt-1.5">Patient</p>
+              </div>
+            </figcaption>
+          </figure>
         </div>
       </section>
     </>
