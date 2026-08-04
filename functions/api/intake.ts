@@ -9,6 +9,58 @@ interface Env {
   NOTIFICATION_FROM_EMAIL?: string;
 }
 
+/**
+ * Map of GHL custom-field `fieldKey` -> field `id`, cached per isolate.
+ * GHL only honours customFields addressed by `id`; entries sent by `key` are
+ * accepted and then silently discarded, which is how intake PHI was being lost.
+ */
+let fieldIdCache: Record<string, string> | null = null;
+
+async function loadFieldIdMap(env: Env): Promise<Record<string, string>> {
+  if (fieldIdCache) return fieldIdCache;
+  const res = await fetch(
+    `https://services.leadconnectorhq.com/locations/${env.GHL_LOCATION_ID}/customFields`,
+    {
+      headers: {
+        'Authorization': `Bearer ${env.GHL_PIT}`,
+        'Version': '2021-07-28',
+        'Accept': 'application/json',
+      },
+    },
+  );
+  if (!res.ok) {
+    console.error('GHL custom field lookup failed:', res.status);
+    return {};
+  }
+  const data = await res.json() as { customFields?: Array<{ id?: string; fieldKey?: string }> };
+  const map: Record<string, string> = {};
+  for (const f of data.customFields || []) {
+    if (f.fieldKey && f.id) map[f.fieldKey] = f.id;
+  }
+  fieldIdCache = map;
+  return map;
+}
+
+async function resolveCustomFieldIds(
+  env: Env,
+  fields: Array<{ key: string; field_value: string }>,
+): Promise<Array<{ id: string; field_value: string }>> {
+  if (fields.length === 0) return [];
+  const map = await loadFieldIdMap(env);
+  const resolved: Array<{ id: string; field_value: string }> = [];
+  const unmatched: string[] = [];
+  for (const f of fields) {
+    const id = map[f.key];
+    if (id) resolved.push({ id, field_value: f.field_value });
+    else unmatched.push(f.key);
+  }
+  if (unmatched.length) {
+    // Loud, because the failure mode this replaces was completely silent.
+    console.error('GHL custom fields missing in location, values NOT saved:', unmatched.join(', '));
+  }
+  return resolved;
+}
+
 interface IntakePayload {
   // Patient info
   firstName: string;
@@ -295,6 +347,12 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
     if (body.hasInsuranceClaim) tags.push('pip-intake');
     else tags.push('new-client-intake');
 
+    // Translate fieldKey -> field id. GHL's contacts API SILENTLY IGNORES
+    // customFields entries addressed by `key` — only `id` is honoured — so every
+    // value sent by key was being dropped without any error. Resolve ids from the
+    // location's field list; anything unmatched is logged rather than lost quietly.
+    const resolvedCustomFields = await resolveCustomFieldIds(env, customFields);
+
     // Create contact in GHL
     const ghlResponse = await fetch('https://services.leadconnectorhq.com/contacts/', {
       method: 'POST',
@@ -312,7 +370,7 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
         address1: fullAddress || undefined,
         locationId: env.GHL_LOCATION_ID,
         tags,
-        customFields: customFields.length > 0 ? customFields : undefined,
+        customFields: resolvedCustomFields.length > 0 ? resolvedCustomFields : undefined,
       }),
     });
 
