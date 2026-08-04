@@ -103,16 +103,38 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
 
     const body: IntakePayload = await request.json();
 
+    // content-length is client-supplied — also cap the actual parsed body
+    if (JSON.stringify(body).length > 50000) {
+      return new Response(
+        JSON.stringify({ error: 'Request too large' }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
     // --- Input validation ---
     const MAX_TEXT = 200;
     const MAX_TEXTAREA = 1000;
     const MAX_ARRAY = 30;
+    const MAX_IDENTIFIER = 100;
 
     const truncate = (val: string | undefined, max: number): string | undefined =>
       val ? val.slice(0, max) : undefined;
 
     const validateArraySize = (arr: unknown[] | undefined, max: number): boolean =>
       !arr || arr.length <= max;
+
+    // Identifiers (claim/member/plan numbers, amounts) must be rejected rather than
+    // silently truncated — a truncated claim number is worse than no claim number.
+    const exceedsMax = (val: string | undefined, max: number): boolean =>
+      typeof val === 'string' && val.length > max;
+
+    // Date fields must be YYYY-MM-DD (what <input type="date"> submits) when present
+    const isValidDate = (val: string | undefined): boolean => {
+      if (!val) return true;
+      if (!/^\d{4}-\d{2}-\d{2}$/.test(val)) return false;
+      const parsed = new Date(`${val}T00:00:00Z`);
+      return !Number.isNaN(parsed.getTime()) && parsed.toISOString().slice(0, 10) === val;
+    };
 
     // Validate required fields
     if (!body.firstName || !body.lastName || !body.phone) {
@@ -174,9 +196,36 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
       );
     }
 
-    if (!body.consentToTreat || !body.hipaAcknowledgment) {
+    // Reject over-long identifiers and insurance values instead of truncating them
+    if (exceedsMax(body.insuranceType, 50) ||
+        exceedsMax(body.planNumber, MAX_IDENTIFIER) ||
+        exceedsMax(body.memberNumber, MAX_IDENTIFIER) ||
+        exceedsMax(body.groupNumber, MAX_IDENTIFIER) ||
+        exceedsMax(body.idNumber, MAX_IDENTIFIER) ||
+        exceedsMax(body.deductibleAmount, 20) ||
+        exceedsMax(body.copayAmount, 20) ||
+        exceedsMax(body.amountRemaining, 20) ||
+        exceedsMax(body.maxVisits, 10)) {
       return new Response(
-        JSON.stringify({ error: 'Consent to treat and HIPAA acknowledgment are required' }),
+        JSON.stringify({ error: 'One or more insurance fields are too long' }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    // Validate date fields
+    if (!isValidDate(body.dateOfBirth) ||
+        !isValidDate(body.insuredDob) ||
+        !isValidDate(body.effectiveDate) ||
+        !isValidDate(body.dateOfAccident)) {
+      return new Response(
+        JSON.stringify({ error: 'Dates must be in YYYY-MM-DD format' }),
+        { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
+      );
+    }
+
+    if (!body.consentToTreat || !body.hipaAcknowledgment || !body.cancellationPolicy) {
+      return new Response(
+        JSON.stringify({ error: 'Consent to treat, HIPAA acknowledgment, and cancellation policy agreement are required' }),
         { status: 400, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
       );
     }
@@ -205,6 +254,12 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
     addField('contact.primary_care_provider', body.primaryCareProvider);
     addField('contact.primary_care_phone', body.primaryCarePhone);
     if (body.areasOfPain?.length) addField('contact.pain_areas', body.areasOfPain.join(', '));
+
+    // Consent attestations — record the answer plus when it was given
+    const consentedAt = new Date().toISOString();
+    addField('contact.consent_to_treat', body.consentToTreat === true ? `Yes (${consentedAt})` : 'No');
+    addField('contact.cancellation_policy', body.cancellationPolicy === true ? `Yes (${consentedAt})` : 'No');
+    addField('contact.consent_to_consult', body.consentToConsult === true ? `Yes (${consentedAt})` : `No (${consentedAt})`);
 
     // Insurance fields (only if insurance claim)
     if (body.hasInsuranceClaim) {
@@ -272,14 +327,11 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
 
     const result = await ghlResponse.json() as { contact?: { id?: string } };
 
-    // Send notifications (Discord + email) — fire and forget
-    const patientName = `${body.firstName} ${body.lastName}`;
+    // Send notifications (Discord + email) — fire and forget.
+    // These are de-identified on purpose: Discord and MailChannels are not covered
+    // by a BAA, so no patient name, email, or phone leaves the GHL / portal boundary.
     const intakeType = body.hasInsuranceClaim ? 'Insurance / PIP Claim' : 'New Client';
-    const notifyPayload = JSON.stringify({
-      name: patientName,
-      email: body.email || '',
-      type: intakeType,
-    });
+    const submittedAt = new Date().toISOString();
 
     const notifications: Promise<unknown>[] = [];
 
@@ -291,18 +343,17 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
           body: JSON.stringify({
             username: 'PNW Clinical Bodywork',
             embeds: [{
-              title: 'New Patient Intake Submission',
+              title: 'New intake received',
+              description: 'A new intake was submitted. Review it in the portal: https://portal.pnwclinicalbodywork.com',
               color: 0x0F766E,
               fields: [
-                { name: 'Patient', value: patientName, inline: true },
                 { name: 'Type', value: intakeType, inline: true },
-                ...(body.email ? [{ name: 'Email', value: body.email, inline: true }] : []),
               ],
               footer: { text: 'pnwclinicalbodywork.com' },
-              timestamp: new Date().toISOString(),
+              timestamp: submittedAt,
             }],
           }),
-        }).catch(() => {})
+        }).catch((err) => { console.error('Intake Discord notification failed:', err instanceof Error ? err.message : 'Unknown error'); })
       );
     }
 
@@ -317,10 +368,10 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
               email: env.NOTIFICATION_FROM_EMAIL || 'intake@pnwclinicalbodywork.com',
               name: 'PNW Clinical Bodywork',
             },
-            subject: `New Intake: ${patientName}`,
-            content: [{ type: 'text/plain', value: `New ${intakeType} intake:\n\nPatient: ${patientName}${body.email ? `\nEmail: ${body.email}` : ''}${body.phone ? `\nPhone: ${body.phone}` : ''}\n\nReview at: https://portal.pnwclinicalbodywork.com` }],
+            subject: 'New intake received',
+            content: [{ type: 'text/plain', value: `A new intake was submitted.\n\nType: ${intakeType}\nReceived: ${submittedAt}\n\nReview it in the portal: https://portal.pnwclinicalbodywork.com` }],
           }),
-        }).catch(() => {})
+        }).catch((err) => { console.error('Intake notification email failed:', err instanceof Error ? err.message : 'Unknown error'); })
       );
     }
 

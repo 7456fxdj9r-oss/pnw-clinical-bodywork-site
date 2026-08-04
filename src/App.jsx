@@ -168,9 +168,34 @@ const BLOG_ARTICLES = [
 ];
 
 // ── Booking Modal ────────────────────────────────────────────────────────
+// The GHL embed script is third-party code. It is loaded on demand when the
+// booking modal opens rather than site-wide, so it never runs on the intake
+// page where patients enter health information.
+const BOOKING_EMBED_SRC = 'https://link.marketsimple.pro/js/form_embed.js';
+let bookingEmbedLoaded = false;
+
+function loadBookingEmbed() {
+  if (bookingEmbedLoaded) return;
+  if (document.querySelector(`script[src="${BOOKING_EMBED_SRC}"]`)) {
+    bookingEmbedLoaded = true;
+    return;
+  }
+  const script = document.createElement('script');
+  script.src = BOOKING_EMBED_SRC;
+  script.type = 'text/javascript';
+  script.async = true;
+  document.body.appendChild(script);
+  bookingEmbedLoaded = true;
+}
+
 function BookingModal() {
   const { showBooking, closeBooking, selectedBookingUrl, setSelectedBookingUrl } = useBooking();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (showBooking) loadBookingEmbed();
+  }, [showBooking]);
+
   if (!showBooking) return null;
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm animate-in fade-in duration-300">
