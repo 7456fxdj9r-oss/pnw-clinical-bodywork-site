@@ -995,6 +995,25 @@ function UnifiedIntakeView() {
   });
   const [submitting, setSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
+  // Photo uploads after a successful submit: token from /api/intake, one status per document.
+  const [uploadToken, setUploadToken] = useState(null);
+  const [photoStatus, setPhotoStatus] = useState({}); // fileType -> 'uploading' | 'done' | error message
+  const uploadPhoto = async (fileType, file) => {
+    if (!file || !uploadToken) return;
+    setPhotoStatus(prev => ({ ...prev, [fileType]: 'uploading' }));
+    try {
+      const fd = new FormData();
+      fd.append('t', uploadToken);
+      fd.append('fileType', fileType);
+      fd.append('file', file);
+      const res = await fetch('/api/intake-upload', { method: 'POST', body: fd });
+      const data = await res.json().catch(() => ({}));
+      if (!res.ok) throw new Error(data.error || 'Upload failed');
+      setPhotoStatus(prev => ({ ...prev, [fileType]: 'done' }));
+    } catch (err) {
+      setPhotoStatus(prev => ({ ...prev, [fileType]: err.message || 'Upload failed' }));
+    }
+  };
   const [error, setError] = useState(null);
   const [insuranceOpen, setInsuranceOpen] = useState(showInsurance);
   const [handoff, setHandoff] = useState(null);          // { hasIntake, hasPip, firstName, appointment }
@@ -1075,6 +1094,8 @@ function UnifiedIntakeView() {
         body: JSON.stringify(form),
       });
       if (!res.ok) { const err = await res.json(); throw new Error(err.error || 'Submission failed'); }
+      const data = await res.json().catch(() => ({}));
+      setUploadToken(data.uploadToken || null);
       setSuccess(true);
     } catch (err) { setError(err.message); } finally { setSubmitting(false); }
   };
@@ -1110,6 +1131,32 @@ function UnifiedIntakeView() {
           <h2 className="text-4xl font-black text-slate-900 mb-4">Intake Received</h2>
           <p className="text-lg text-slate-500 font-medium mb-8">Thank you. Glen will review your information and contact you within one business day.</p>
           <p className="text-sm text-slate-400 font-bold mb-10">If you need immediate assistance, call <strong>(360) 521-0804</strong>.</p>
+
+          {uploadToken && (
+            <div className="text-left bg-white border border-slate-200 rounded-[2rem] p-6 sm:p-8 mb-10 shadow-sm">
+              <p className="text-[10px] font-black uppercase text-teal-600 tracking-widest mb-1">One more thing, if you have them handy</p>
+              <h3 className="text-xl font-black text-slate-900 mb-2">Add photos of your insurance card and license</h3>
+              <p className="text-sm text-slate-500 font-medium mb-6">Saves time at your first visit. Take a photo with your phone or choose a file. Stored privately and seen only by Glen. Or just bring the cards with you.</p>
+              <div className="grid gap-4 sm:grid-cols-3">
+                {[
+                  { key: 'insurance_card', label: 'Insurance card — front' },
+                  { key: 'insurance_card_back', label: 'Insurance card — back' },
+                  { key: 'drivers_license', label: "Driver's license" },
+                ].map(doc => {
+                  const st = photoStatus[doc.key];
+                  return (
+                    <label key={doc.key} className={`block rounded-2xl border-2 border-dashed p-4 text-center cursor-pointer transition-colors ${st === 'done' ? 'border-emerald-300 bg-emerald-50' : 'border-slate-200 hover:border-teal-400 bg-slate-50'}`}>
+                      <span className="block text-xs font-black text-slate-700 mb-2">{doc.label}</span>
+                      <span className="block text-[11px] font-bold text-slate-400">
+                        {st === 'uploading' ? 'Uploading…' : st === 'done' ? 'Added ✓' : st ? st : 'Tap to add a photo'}
+                      </span>
+                      <input type="file" accept="image/*" capture="environment" className="hidden" disabled={st === 'uploading' || st === 'done'} onChange={e => uploadPhoto(doc.key, e.target.files && e.target.files[0])} />
+                    </label>
+                  );
+                })}
+              </div>
+            </div>
+          )}
           <Link to="/" className="px-10 py-4 bg-teal-700 text-white rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-teal-800 transition-all inline-block">Return Home</Link>
         </div>
       </section>

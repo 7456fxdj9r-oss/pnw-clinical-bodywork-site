@@ -1,9 +1,12 @@
 // Cloudflare Pages Function — handles unified intake form submissions
 // Creates a contact in GHL with all intake data as custom fields
 
+import { signToken } from '../_handoff';
+
 interface Env {
   GHL_PIT: string;
   GHL_LOCATION_ID: string;
+  HANDOFF_SECRET?: string;
 }
 
 /**
@@ -415,13 +418,23 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
     const result = await ghlResponse.json() as { contact?: { id?: string } };
     if (mergedInto) console.log(`intake: merged into existing contact ${mergedInto}`);
 
+    // Let the success screen offer photo uploads for this contact: a token bound
+    // to the contact, valid two hours, verified by /api/intake-upload. Absent if
+    // the secret isn't configured — the form still succeeds, just without photos.
+    const contactId = result.contact?.id || mergedInto || null;
+    let uploadToken: string | null = null;
+    if (contactId && env.HANDOFF_SECRET) {
+      uploadToken = await signToken({ c: contactId, a: 'upload', e: Math.floor(Date.now() / 1000) + 2 * 3600 }, env.HANDOFF_SECRET)
+        .catch(() => null);
+    }
+
     // No notifications go out from here. The Discord/MailChannels sends this
     // used to attempt never delivered (no Discord URL in production; MailChannels
     // free sending ended 2024-06-30). Glen sees new intakes in the portal's
     // Intake Review queue, driven by the tags written above.
 
     return new Response(
-      JSON.stringify({ success: true }),
+      JSON.stringify({ success: true, uploadToken }),
       { status: 201, headers: { ...corsHeaders, 'Content-Type': 'application/json' } }
     );
   } catch (err) {
