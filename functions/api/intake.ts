@@ -353,26 +353,58 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
     // location's field list; anything unmatched is logged rather than lost quietly.
     const resolvedCustomFields = await resolveCustomFieldIds(env, customFields);
 
-    // Create contact in GHL
-    const ghlResponse = await fetch('https://services.leadconnectorhq.com/contacts/', {
+    const ghlHeaders = {
+      'Authorization': `Bearer ${env.GHL_PIT}`,
+      'Version': '2021-07-28',
+      'Content-Type': 'application/json',
+    };
+    const contactFields = {
+      firstName: body.firstName,
+      lastName: body.lastName,
+      email: body.email,
+      phone: body.phone,
+      dateOfBirth: body.dateOfBirth,
+      address1: fullAddress || undefined,
+      customFields: resolvedCustomFields.length > 0 ? resolvedCustomFields : undefined,
+    };
+
+    // Create the contact in GHL — or update the one that already exists.
+    //
+    // The booking widget creates a contact before the patient ever sees this
+    // form, and returning patients always match on phone or email. GHL answers a
+    // duplicate with 400 and the existing record's id in meta.contactId. That
+    // 400 used to fall through to the generic failure below, so every patient
+    // who booked first — the intended order — lost their entire intake and was
+    // told to phone the office.
+    let ghlResponse = await fetch('https://services.leadconnectorhq.com/contacts/', {
       method: 'POST',
-      headers: {
-        'Authorization': `Bearer ${env.GHL_PIT}`,
-        'Version': '2021-07-28',
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        firstName: body.firstName,
-        lastName: body.lastName,
-        email: body.email,
-        phone: body.phone,
-        dateOfBirth: body.dateOfBirth,
-        address1: fullAddress || undefined,
-        locationId: env.GHL_LOCATION_ID,
-        tags,
-        customFields: resolvedCustomFields.length > 0 ? resolvedCustomFields : undefined,
-      }),
+      headers: ghlHeaders,
+      body: JSON.stringify({ ...contactFields, locationId: env.GHL_LOCATION_ID, tags }),
     });
+    let mergedInto: string | null = null;
+
+    if (ghlResponse.status === 400) {
+      const dup = await ghlResponse.clone().json().catch(() => null) as
+        { message?: string; meta?: { contactId?: string } } | null;
+      const existingId = dup?.meta?.contactId;
+      if (existingId && /duplicat/i.test(dup?.message ?? '')) {
+        mergedInto = existingId;
+        // PUT rejects locationId in the body. Tags go through the add-tags
+        // endpoint so the contact's existing tags are kept, not replaced.
+        ghlResponse = await fetch(`https://services.leadconnectorhq.com/contacts/${existingId}`, {
+          method: 'PUT',
+          headers: ghlHeaders,
+          body: JSON.stringify(contactFields),
+        });
+        if (ghlResponse.ok) {
+          await fetch(`https://services.leadconnectorhq.com/contacts/${existingId}/tags`, {
+            method: 'POST',
+            headers: ghlHeaders,
+            body: JSON.stringify({ tags }),
+          }).catch((err) => { console.error('intake: could not add tags to existing contact:', err instanceof Error ? err.message : 'Unknown error'); });
+        }
+      }
+    }
 
     if (!ghlResponse.ok) {
       const errorText = await ghlResponse.text();
@@ -384,6 +416,7 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
     }
 
     const result = await ghlResponse.json() as { contact?: { id?: string } };
+    if (mergedInto) console.log(`intake: merged into existing contact ${mergedInto}`);
 
     // Send notifications (Discord + email) — fire and forget.
     // These are de-identified on purpose: Discord and MailChannels are not covered
