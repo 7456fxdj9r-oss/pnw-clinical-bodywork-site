@@ -30,6 +30,7 @@ export const onRequestGet: PagesFunction<HandoffEnv> = async ({ request, env }) 
         startTime: appt.startTime,
         endTime: appt.endTime,
         service: SERVICE_BY_CALENDAR[appt.calendarId]?.label ?? null,
+        minutes: SERVICE_BY_CALENDAR[appt.calendarId]?.minutes ?? null,
       },
     }, 200);
   } catch (err) {

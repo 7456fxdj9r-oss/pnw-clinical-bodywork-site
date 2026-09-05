@@ -964,6 +964,10 @@ const INSURANCE_TYPES = ['Group', 'PIP / Auto', "Worker's Compensation"];
 function UnifiedIntakeView() {
   const location = useLocation();
   const showInsurance = new URLSearchParams(location.search).get('insurance') === 'true';
+  // Handoff token from the email Glen sends (see functions/_handoff.ts). With
+  // it, the page prefills what the booking already collected and learns
+  // whether an intake is on file. Without it, nothing here changes.
+  const handoffToken = new URLSearchParams(location.search).get('t');
 
   const [form, setForm] = useState({
     firstName: '', lastName: '', dateOfBirth: '', email: '', phone: '',
@@ -993,6 +997,57 @@ function UnifiedIntakeView() {
   const [success, setSuccess] = useState(false);
   const [error, setError] = useState(null);
   const [insuranceOpen, setInsuranceOpen] = useState(showInsurance);
+  const [handoff, setHandoff] = useState(null);          // { hasIntake, hasPip, firstName, appointment }
+  const [handoffNotice, setHandoffNotice] = useState(null);
+  const [showFormAnyway, setShowFormAnyway] = useState(false);
+
+  useEffect(() => {
+    if (!handoffToken) return;
+    let cancelled = false;
+    (async () => {
+      try {
+        const res = await fetch(`/api/handoff?t=${encodeURIComponent(handoffToken)}`);
+        if (!res.ok) {
+          setHandoffNotice(res.status === 410
+            ? 'That appointment was cancelled. You can still fill out the form below.'
+            : "This link has expired or isn't valid — no problem, you can still fill out the form below.");
+          return;
+        }
+        const d = await res.json();
+        if (cancelled) return;
+        setForm(prev => ({
+          ...prev,
+          firstName: d.firstName || prev.firstName,
+          lastName: d.lastName || prev.lastName,
+          email: d.email || prev.email,
+          phone: d.phone || prev.phone,
+          dateOfBirth: d.dateOfBirth || prev.dateOfBirth,
+        }));
+        setHandoff({ hasIntake: !!d.hasIntake, hasPip: !!d.hasPip, firstName: d.firstName || '', appointment: d.appointment || null });
+      } catch {
+        if (!cancelled) setHandoffNotice("We couldn't load your booking details — no problem, you can still fill out the form below.");
+      }
+    })();
+    return () => { cancelled = true; };
+  }, [handoffToken]);
+
+  // Appointment display + calendar links for the handoff panel. End = start +
+  // session length, matching the .ics (stored ends can carry a 15-min buffer).
+  const appt = handoff?.appointment;
+  const apptStart = appt?.startTime ? new Date(appt.startTime) : null;
+  const apptEnd = apptStart ? new Date(apptStart.getTime() + ((appt.minutes || 60) * 60000)) : null;
+  const apptWhen = apptStart
+    ? apptStart.toLocaleString('en-US', { weekday: 'long', month: 'long', day: 'numeric', hour: 'numeric', minute: '2-digit', timeZone: 'America/Los_Angeles' })
+    : '';
+  const gcalStamp = (d) => d.toISOString().replace(/[-:]/g, '').replace(/\.\d{3}Z$/, 'Z');
+  const googleCalUrl = apptStart ? 'https://calendar.google.com/calendar/render?' + new URLSearchParams({
+    action: 'TEMPLATE',
+    text: `${appt.service || 'Appointment'} with Glen — PNW Clinical Bodywork`,
+    dates: `${gcalStamp(apptStart)}/${gcalStamp(apptEnd)}`,
+    location: '5514 NE 107th Ave, Ste 101, Vancouver, WA 98662',
+    details: "Reply to Glen's email or call (360) 521-0804 if anything needs to change.",
+  }).toString() : null;
+  const icsUrl = handoffToken ? `/api/handoff/ics?t=${encodeURIComponent(handoffToken)}` : null;
 
   const set = (key, value) => setForm(prev => ({ ...prev, [key]: value }));
   const toggleArray = (key, item) => setForm(prev => ({
@@ -1024,6 +1079,29 @@ function UnifiedIntakeView() {
     } catch (err) { setError(err.message); } finally { setSubmitting(false); }
   };
 
+  // Returning patient with an intake on file: no form unless they ask for it.
+  if (handoff?.hasIntake && !showFormAnyway) {
+    return (
+      <section className="pt-32 pb-24 px-6 animate-in fade-in duration-500">
+        <div className="max-w-2xl mx-auto text-center">
+          <div className="w-20 h-20 bg-emerald-100 rounded-full flex items-center justify-center mx-auto mb-6"><CheckCircle2 className="text-emerald-600" size={40} /></div>
+          <h2 className="text-4xl font-black text-slate-900 mb-4">You're all set{handoff.firstName ? `, ${handoff.firstName}` : ''}.</h2>
+          <p className="text-lg text-slate-500 font-medium mb-3">We already have your intake on file — nothing to fill out.</p>
+          {apptWhen && (
+            <p className="text-lg text-slate-700 font-bold mb-8">{appt.service || 'Your appointment'} with Glen · {apptWhen}</p>
+          )}
+          {googleCalUrl && (
+            <div className="flex flex-col sm:flex-row gap-3 justify-center mb-10">
+              <a href={googleCalUrl} target="_blank" rel="noreferrer" className="px-6 py-3 bg-teal-700 text-white rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-teal-800 transition-all">Add to Google Calendar</a>
+              <a href={icsUrl} className="px-6 py-3 bg-white border border-teal-200 text-teal-700 rounded-2xl font-black text-xs uppercase tracking-widest hover:bg-teal-50 transition-all">Apple / Outlook (.ics)</a>
+            </div>
+          )}
+          <button type="button" onClick={() => setShowFormAnyway(true)} className="text-xs font-black uppercase tracking-widest text-slate-400 hover:text-teal-700 underline">Update my information</button>
+          <p className="text-sm text-slate-400 font-bold mt-10">Questions? Call <strong>(360) 521-0804</strong>.</p>
+        </div>
+      </section>
+    );
+  }
   if (success) {
     return (
       <section className="pt-32 pb-24 px-6 animate-in fade-in duration-500">
@@ -1048,6 +1126,14 @@ function UnifiedIntakeView() {
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-8">
+          {handoffNotice && (
+            <div className="p-4 bg-amber-50 border border-amber-200 rounded-2xl text-sm font-bold text-amber-800">{handoffNotice}</div>
+          )}
+          {handoff && !handoff.hasIntake && (
+            <div className="p-4 bg-teal-50 border border-teal-200 rounded-2xl text-sm font-bold text-teal-800">
+              We've filled in what you gave us when you booked{apptWhen ? ` for ${apptWhen}` : ''} — check it, then complete the rest.
+            </div>
+          )}
           {/* Patient Information */}
           <div className="bg-white p-6 sm:p-10 rounded-[2.5rem] border border-slate-100 shadow-sm">
             <h3 className="text-lg font-black text-slate-900 mb-6 flex items-center gap-2"><User className="text-teal-600" size={22} /> Patient Information</h3>
