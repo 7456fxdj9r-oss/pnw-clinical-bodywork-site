@@ -4,9 +4,6 @@
 interface Env {
   GHL_PIT: string;
   GHL_LOCATION_ID: string;
-  DISCORD_WEBHOOK_URL?: string;
-  NOTIFICATION_EMAIL?: string;
-  NOTIFICATION_FROM_EMAIL?: string;
 }
 
 /**
@@ -418,55 +415,10 @@ export const onRequestPost: PagesFunction<Env> = async (context) => {
     const result = await ghlResponse.json() as { contact?: { id?: string } };
     if (mergedInto) console.log(`intake: merged into existing contact ${mergedInto}`);
 
-    // Send notifications (Discord + email) — fire and forget.
-    // These are de-identified on purpose: Discord and MailChannels are not covered
-    // by a BAA, so no patient name, email, or phone leaves the GHL / portal boundary.
-    const intakeType = body.hasInsuranceClaim ? 'Insurance / PIP Claim' : 'New Client';
-    const submittedAt = new Date().toISOString();
-
-    const notifications: Promise<unknown>[] = [];
-
-    if (env.DISCORD_WEBHOOK_URL) {
-      notifications.push(
-        fetch(env.DISCORD_WEBHOOK_URL, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            username: 'PNW Clinical Bodywork',
-            embeds: [{
-              title: 'New intake received',
-              description: 'A new intake was submitted. Review it in the portal: https://portal.pnwclinicalbodywork.com',
-              color: 0x0F766E,
-              fields: [
-                { name: 'Type', value: intakeType, inline: true },
-              ],
-              footer: { text: 'pnwclinicalbodywork.com' },
-              timestamp: submittedAt,
-            }],
-          }),
-        }).catch((err) => { console.error('Intake Discord notification failed:', err instanceof Error ? err.message : 'Unknown error'); })
-      );
-    }
-
-    if (env.NOTIFICATION_EMAIL) {
-      notifications.push(
-        fetch('https://api.mailchannels.net/tx/v1/send', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            personalizations: [{ to: [{ email: env.NOTIFICATION_EMAIL }] }],
-            from: {
-              email: env.NOTIFICATION_FROM_EMAIL || 'intake@pnwclinicalbodywork.com',
-              name: 'PNW Clinical Bodywork',
-            },
-            subject: 'New intake received',
-            content: [{ type: 'text/plain', value: `A new intake was submitted.\n\nType: ${intakeType}\nReceived: ${submittedAt}\n\nReview it in the portal: https://portal.pnwclinicalbodywork.com` }],
-          }),
-        }).catch((err) => { console.error('Intake notification email failed:', err instanceof Error ? err.message : 'Unknown error'); })
-      );
-    }
-
-    if (notifications.length > 0) await Promise.all(notifications);
+    // No notifications go out from here. The Discord/MailChannels sends this
+    // used to attempt never delivered (no Discord URL in production; MailChannels
+    // free sending ended 2024-06-30). Glen sees new intakes in the portal's
+    // Intake Review queue, driven by the tags written above.
 
     return new Response(
       JSON.stringify({ success: true }),
