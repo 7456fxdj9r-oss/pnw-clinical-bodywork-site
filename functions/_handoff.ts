@@ -13,6 +13,8 @@ export interface HandoffEnv {
   GHL_PIT: string;
   GHL_LOCATION_ID: string;
   HANDOFF_SECRET?: string;
+  /** Short-link store: code → token. Written by the portal when it mints; read by /i/<code>. */
+  LINKS?: KVNamespace;
 }
 
 export interface HandoffClaims {
@@ -134,3 +136,18 @@ export const PRACTICE = {
 
 /** Tags written by /api/intake; the only marker that a patient has completed intake. */
 export const INTAKE_TAGS = ['new-client-intake', 'pip-intake'];
+
+/** Add-to-Google-Calendar URL for an appointment. Ends at start + session length, like the .ics. */
+export function googleCalendarUrl(appt: HandoffAppointment): string {
+  const service = SERVICE_BY_CALENDAR[appt.calendarId];
+  const start = new Date(appt.startTime);
+  const end = service ? new Date(start.getTime() + service.minutes * 60000) : new Date(appt.endTime);
+  const stamp = (d: Date) => d.toISOString().replace(/[-:]/g, '').replace(/\.\d{3}Z$/, 'Z');
+  const params = new URLSearchParams({
+    action: 'TEMPLATE',
+    text: `${service ? service.label : 'Appointment'} with Glen — ${PRACTICE.name}`,
+    dates: `${stamp(start)}/${stamp(end)}`,
+    location: PRACTICE.address,
+  });
+  return `https://calendar.google.com/calendar/render?${params.toString()}`;
+}

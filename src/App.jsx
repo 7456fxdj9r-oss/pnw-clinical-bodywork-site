@@ -1017,7 +1017,11 @@ function UnifiedIntakeView() {
   const [error, setError] = useState(null);
   const [insuranceOpen, setInsuranceOpen] = useState(showInsurance);
   const [handoff, setHandoff] = useState(null);          // { hasIntake, hasPip, firstName, appointment }
-  const [handoffNotice, setHandoffNotice] = useState(null);
+  const [handoffNotice, setHandoffNotice] = useState(
+    new URLSearchParams(location.search).get('expired') === '1'
+      ? "This link has expired or isn't valid — no problem, you can still fill out the form below."
+      : null,
+  );
   const [showFormAnyway, setShowFormAnyway] = useState(false);
 
   useEffect(() => {

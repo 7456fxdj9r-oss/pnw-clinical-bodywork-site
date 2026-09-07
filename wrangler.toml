@@ -9,3 +9,10 @@ pages_build_output_dir = "dist"
 [[r2_buckets]]
 binding = "MEDIA"
 bucket_name = "pnw-clinical-phi-media"
+
+# Short links for the booking→intake handoff (pnwclinicalbodywork.com/i/<code>).
+# The portal writes code → token here when it mints a handoff; the site reads it
+# to redirect. Entries expire with the token. Shared by both projects.
+[[kv_namespaces]]
+binding = "LINKS"
+id = "1d287f50ecf04038b78ae7ebe7f979d3"
